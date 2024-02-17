@@ -16,14 +16,39 @@ function Newproduct() {
     await axios.post("/api/products", formData);
     router.push("/products");
   };
-  const handleUploadFile = async (e) => {
-    const data = new FormData();
-    e.target.files?.forEach((file) => {
-      data.append("file", file);
-    });
-    const response = await axios.post("/api/upload/productimage", data);
-    console.log(response.data);
+
+  const handleUploadFile = (e) => {
+    const file = e.target?.files[0];
+    const form = new FormData();
+    form.append("file", file);
+
+    fetch("/api/upload", {
+      method: "POST",
+      body: form,
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        console.log("data", data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
   };
+  // async function handleUploadFile(ev) {
+  //   const files = ev.target?.files;
+  //   if (files?.length > 0) {
+  //     // setIsUploading(true);
+  //     const data = new FormData();
+  //     for (const file of files) {
+  //       data.append("file", file);
+  //     }
+  //     const res = await axios.post("/api/upload", data);
+  //     // setImages(oldImages => {
+  //     //   return [...oldImages, ...res.data.links];
+  //     // });
+  //     // setIsUploading(false);
+  //   }
+  // }
   return (
     <Layout>
       <div className=" flex flex-col items-center">
