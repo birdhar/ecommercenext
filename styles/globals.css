@@ -3,31 +3,27 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+input,
+textarea {
+  @apply border-[1px] border-inherit p-2 rounded-md outline-none w-[100%] mt-1 mb-4 text-[0.85rem];
+}
+label {
+  @apply text-[#0e7490] mt-2;
+}
+
+table {
+  @apply rounded-tr-lg rounded-tl-lg max-h-[80vh] overflow-scroll;
+}
+
+table thead tr td {
+  @apply text-[#f0fdf4] p-2 px-4;
+}
+
+table tbody tr td {
+  @apply p-2 px-4 border-[1px] border-inherit text-[0.85rem];
 }
