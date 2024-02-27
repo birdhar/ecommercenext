@@ -6,10 +6,12 @@
 }
 
 body {
+  box-sizing: border-box;
 }
 
 input,
-textarea {
+textarea,
+select {
   @apply border-[1px] border-inherit p-2 rounded-md outline-none w-[100%] mt-1 mb-4 text-[0.85rem];
 }
 label {
@@ -17,7 +19,7 @@ label {
 }
 
 table {
-  @apply rounded-tr-lg rounded-tl-lg max-h-[80vh] overflow-scroll;
+  @apply rounded-tr-lg rounded-tl-lg max-h-[80vh];
 }
 
 table thead tr td {

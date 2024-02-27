@@ -3,15 +3,25 @@ import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/router";
 
-function DeleteProduct({ open, hideModal, pid }) {
+function DeleteProduct({ status, open, hideModal, pid, fetchCategories }) {
   const router = useRouter();
   const deleteProduct = async () => {
-    await axios.delete(`/api/products?id=` + pid).then((res) => {
-      if (res.status === 200) {
-        router.push("/products");
-        hideModal();
-      }
-    });
+    if (status === "category") {
+      await axios.delete(`/api/categories?id=` + pid).then((res) => {
+        if (res.status === 200) {
+          router.push("/categories");
+          fetchCategories();
+          hideModal();
+        }
+      });
+    } else {
+      await axios.delete(`/api/products?id=` + pid).then((res) => {
+        if (res.status === 200) {
+          router.push("/products");
+          hideModal();
+        }
+      });
+    }
   };
   return (
     <Dialog open={open} onClose={hideModal}>

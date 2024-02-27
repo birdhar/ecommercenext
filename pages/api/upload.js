@@ -5,10 +5,11 @@ import {
 } from "@aws-sdk/client-s3";
 import formidable from "formidable";
 import fs from "fs";
-import mime from "mime-types";
+import { checkAdmin } from "./auth/[...nextauth]";
 
 async function handlePostFormReq(req, res) {
   const form = formidable({ multiple: true });
+  checkAdmin(req, res);
 
   const formData = new Promise((resolve, reject) => {
     form.parse(req, async (err, fields, files) => {
@@ -24,7 +25,7 @@ async function handlePostFormReq(req, res) {
     const { fields, files } = await formData;
 
     const client = new S3Client({
-      region: " ap-south-1",
+      region: "us-east-1",
       credentials: {
         accessKeyId: process.env.S3_ACCESS_KEY,
         secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
@@ -35,7 +36,7 @@ async function handlePostFormReq(req, res) {
       const extension = file.originalFilename.split(".").pop();
       const fileName = Date.now() + "." + extension;
 
-      client.send(
+      await client.send(
         new PutObjectCommand({
           Bucket: "ecommercenext-birat",
           Key: fileName,
@@ -44,14 +45,13 @@ async function handlePostFormReq(req, res) {
           ContentType: file.mimetype,
         })
       );
+
       const generatedlink = `https://ecommercenext-birat.s3.amazonaws.com/${fileName}`;
+
       generatedlinks.push(generatedlink);
     }
-    // for (const f of files.file) {
-    //   console.log(fs.readFileSync(f.filepath));
-    // }
 
-    res.status(200).send({ status: "submitted", link: generatedlinks });
+    res.json({ links: generatedlinks });
     return;
   } catch (e) {
     res.status(400).send({ status: "invalid submission" });

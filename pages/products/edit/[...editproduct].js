@@ -1,3 +1,4 @@
+import IndianRupeeFormatter from "@/components/IndianRupeeFormatter";
 import Layout from "@/components/Layout";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -5,11 +6,13 @@ import React, { useEffect, useState } from "react";
 
 function Editproduct() {
   const router = useRouter();
+  const [categories, setCategories] = useState([]);
   const id = router?.query?.editproduct[0];
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     price: 0,
+    category: "",
   });
 
   useEffect(() => {
@@ -18,6 +21,9 @@ function Editproduct() {
     }
     axios.get("/api/products?id=" + id).then((res) => {
       setFormData(res.data);
+    });
+    axios.get("/api/categories").then((res) => {
+      setCategories(res.data);
     });
   }, [id]);
   const editProduct = (e) => {
@@ -28,6 +34,29 @@ function Editproduct() {
       }
     });
   };
+  function formatIndianRupee(amount) {
+    // Convert number to string
+    const amountStr = amount.toString();
+
+    // Split integer and decimal parts
+    const parts = amountStr.split(".");
+
+    // Format integer part with commas
+    const integerPartWithCommas = parts[0].replace(
+      /\B(?=(\d{3})+(?!\d))/g,
+      ","
+    );
+
+    // Combine integer and decimal parts
+    const formattedAmount =
+      parts.length === 2
+        ? integerPartWithCommas + "." + parts[1]
+        : integerPartWithCommas;
+
+    // Return formatted amount with Indian rupee symbol
+    console.log(formattedAmount);
+    return "₹" + formattedAmount;
+  }
   return (
     <Layout>
       <div className=" flex flex-col items-center">
@@ -42,6 +71,22 @@ function Editproduct() {
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="Product Name"
           />
+          <label className="mb-2">Product Category</label>
+
+          <select
+            required
+            value={formData.category}
+            onChange={(e) => {
+              setFormData({ ...formData, category: e.target.value });
+            }}
+          >
+            <option value="">Select Category</option>
+            {categories?.map((category, index) => (
+              <option key={category?._id} value={category?._id}>
+                {category?.name}
+              </option>
+            ))}
+          </select>
           <label className="mb-2">Product Description</label>
           <textarea
             type="text"
@@ -54,7 +99,7 @@ function Editproduct() {
           <label className="mb-2">Price</label>
           <input
             type="number"
-            value={formData.price}
+            value={formData?.price}
             onChange={(e) =>
               setFormData({ ...formData, price: e.target.value })
             }

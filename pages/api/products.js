@@ -1,8 +1,10 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import { Product } from "@/models/Product";
+import { checkAdmin } from "./auth/[...nextauth]";
 
 export default async function handler(req, res) {
   const { method } = req;
+  await checkAdmin(req, res);
   await mongooseConnect();
 
   if (method === "GET") {
@@ -14,18 +16,25 @@ export default async function handler(req, res) {
   }
 
   if (method === "POST") {
-    const { name, description, price } = req.body;
+    const { name, description, price, image, category, features } = req.body;
+
     const product = await Product.create({
       name,
       description,
       price,
+      image,
+      category,
+      features,
     });
     res.json(product);
   }
 
   if (method === "PUT") {
-    const { name, description, price, id } = req.body;
-    await Product.updateOne({ _id: id }, { name, description, price });
+    const { name, description, price, id, category, features } = req.body;
+    await Product.updateOne(
+      { _id: id },
+      { name, description, price, category, features }
+    );
     res.json(true);
   }
   if (method === "DELETE") {

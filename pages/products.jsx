@@ -1,102 +1,144 @@
 import DeleteProduct from "@/components/DeleteProduct";
 import Layout from "@/components/Layout";
+import Loader from "@/components/Loader";
+import TableBody from "@/components/TableBody";
+import ViewProduct from "@/components/ViewProduct";
 import axios from "axios";
+import { getSession, useSession } from "next-auth/react";
+import Error from "@/components/Error";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 function Products() {
+  const [searchQuery, setSearchQuery] = useState("");
   const [products, setProducts] = useState([]);
-  const [pid, setPid] = useState("");
-  const [open, setOpen] = useState(false);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [productt, setProductt] = useState(null);
+  const [open, setOpen] = useState({
+    delete: false,
+    view: false,
+  });
   useEffect(() => {
     axios.get("/api/products").then((res) => {
       setProducts(res.data);
+      setFilteredItems(res.data);
     });
   }, []);
 
   useEffect(() => {
     axios.get("/api/products").then((res) => {
       setProducts(res.data);
+      setFilteredItems(res.data);
     });
   }, [open]);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      const filtered = products.filter((item) =>
+        item?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
+      );
+      setFilteredItems(filtered);
+    }, 1000);
+
+    return () => clearTimeout(delay);
+  }, [searchQuery, products]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   return (
     <>
       <Layout>
-        <div className="w-[100%]">
-          <table className="w-[100%] mb-4">
-            <thead>
-              <tr className="bg-[#164e63] ">
-                <td>Name</td>
-                <td>Description</td>
-                <td>Price</td>
-                <td>Action</td>
-              </tr>
-            </thead>
-            <tbody>
-              {products?.map((product) => (
-                <tr key={product?._id}>
-                  <td>{product?.name}</td>
-                  <td> {product?.description}</td>
-                  <td> {product?.price}</td>
-                  <td className="flex gap-2">
-                    <Link
-                      href={`/products/edit/${product?._id}`}
-                      className="flex gap-2 text-white bg-[#082f49] w-fit p-1  rounded"
+        <div className="w-full">
+          <div className="flex mb-4 justify-between items-center mt-[-0.1rem] ">
+            <h4 className=" text-[#164e63] font-medium text-[1.4rem] hidden md:block">
+              Procuct List
+            </h4>
+            <div className="w-full md:w-fit">
+              <div className="flex gap-2 items-center justify-between">
+                <div class="relative  flex  flex-wrap items-stretch flex-1 sm:w-[20rem]">
+                  <input
+                    type="search"
+                    class="relative m-0 -mr-0.5 block min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+                    placeholder="Search"
+                    aria-label="Search"
+                    aria-describedby="button-addon1"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                  />
+                </div>
+                <Link
+                  href="/newproduct"
+                  className="p-2 bg-[#0c4a6e] h-fit text-white font-normal flex items-center gap-1 text-sm w-fit rounded cursor-pointer hover:bg-[#1d7db5]"
+                >
+                  <span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-4 h-4"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="w-4 h-4"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                        />
-                      </svg>
-                    </Link>
-                    <div
-                      className="flex gap-2 text-white bg-[#f04f4c] w-fit p-1 cursor-pointer rounded"
-                      onClick={() => {
-                        setOpen(true);
-                        setPid(product?._id);
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="w-4 h-4"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                        />
-                      </svg>
-                    </div>
-                  </td>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15"
+                      />
+                    </svg>
+                  </span>{" "}
+                  New Product
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className="w-full h-[calc(100vh-9rem)] p-2 overflow-scroll md:h-[calc(100vh-5rem)]">
+            <table className=" mb-4">
+              <thead>
+                <tr className="bg-[#164e63] ">
+                  <td>Name</td>
+                  <td>Image</td>
+                  <td>Description</td>
+                  <td>Price</td>
+                  <td>Action</td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <Link
-            href="/newproduct"
-            className="p-2 bg-[#0c4a6e] text-white font-normal text-sm w-fit rounded cursor-pointer hover:bg-[#1d7db5]"
-          >
-            Add New Product
-          </Link>
+              </thead>
+              <tbody className="">
+                {filteredItems?.map((product) => (
+                  <TableBody
+                    key={product?._id}
+                    product={product}
+                    viewImg={(product) => {
+                      setOpen({ ...open, view: true });
+                      setProductt(product);
+                    }}
+                    deleteItem={(product) => {
+                      setOpen({ ...open, delete: true });
+                      setProductt(product);
+                    }}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </Layout>
 
-      {open && (
-        <DeleteProduct open={open} hideModal={() => setOpen(false)} pid={pid} />
+      {open.delete && (
+        <DeleteProduct
+          open={open.delete}
+          hideModal={() => setOpen({ ...open, delete: false })}
+          pid={productt?._id}
+        />
+      )}
+      {open.view && (
+        <ViewProduct
+          open={open.view}
+          hideModal={() => setOpen({ ...open, view: false })}
+          image={productt?.image}
+        />
       )}
     </>
   );
