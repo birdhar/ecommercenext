@@ -1,0 +1,120 @@
+.productscontainer {
+  width: 100%;
+}
+.herosection {
+  background-color: rgb(252, 239, 241);
+  width: 100%;
+  display: flex;
+  gap: 3%;
+}
+.herosectionimg {
+  width: 40%;
+  display: grid;
+  place-items: center;
+}
+.herosectionimg img {
+  height: 20rem;
+}
+.herosectiontext {
+  width: 57%;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.herosectiontexth3 {
+  color: #415161;
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 110%;
+}
+.orderbtn {
+  margin-top: 2rem;
+  background-image: linear-gradient(
+    to right,
+    #f37d7d 0%,
+    #f16868 51%,
+    #c75555 100% /* #2c667a 0%,
+    #3a4d5d 51%,
+    #3e4d66 100%*/
+  );
+  font-size: 0.9rem;
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  border-radius: 1.2rem;
+  color: #fff;
+  box-shadow: 0 0 20px #eee;
+}
+.categorylist {
+  width: 100%;
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 3rem;
+}
+
+.product {
+  width: 17rem;
+  padding: 1.3rem;
+  border: 0.1px solid rgb(220, 212, 212);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0.5rem;
+  height: 20rem;
+  padding: 0;
+
+  justify-content: space-between;
+}
+.productimgcontainer {
+  width: 100%;
+  height: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.productimg {
+  max-width: 100%;
+  max-height: 100%;
+  padding: 1rem;
+}
+.productname {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #2a3641;
+}
+.productprice {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2b2d2f;
+}
+.producttext {
+  height: 30%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f8f8f8;
+  padding: 0.5rem 1rem;
+}
+.priceflex {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+}
+.rating {
+  display: flex;
+  gap: 0.2rem;
+}
+.star {
+  height: 0.7rem;
+  width: 0.7rem;
+  color: rgb(238, 125, 129);
+}
+.staractive {
+  color: rgb(243, 158, 158);
+}

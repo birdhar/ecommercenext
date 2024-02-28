@@ -4,21 +4,19 @@ import Drawer from "@/components/Drawer";
 import Header from "@/components/Header";
 import HeroSection from "@/components/Herosection";
 import LatestProducts from "@/components/LatestProducts";
+import Layout from "@/components/Layout";
 import Notification from "@/components/Notification";
 
 function Home(params) {
   return (
-    <>
-      <div className="box-border ">
-        <Header />
-        <HeroSection />
+    <Layout>
+      <HeroSection />
 
-        <LatestProducts />
-        <AdSellFeature />
-        <Categories />
-        <Notification />
-      </div>
-    </>
+      <LatestProducts />
+      <AdSellFeature />
+      <Categories />
+      <Notification />
+    </Layout>
   );
 }
 

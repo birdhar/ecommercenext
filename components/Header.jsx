@@ -1,9 +1,12 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import Drawer from "./Drawer";
+import { useRouter } from "next/router";
 // 475d71 df6767
 function Header() {
+  const router = useRouter();
   const [openDrawer, setOpenDrawer] = useState(false);
+
   return (
     <>
       <header className="bg-[#ffffff] p-4 px-4 flex items-center justify-between w-full sm:px-8">
@@ -18,9 +21,11 @@ function Header() {
               <Link
                 href="/"
                 className={
-                  "text-[#415161] text-[0.9rem] font-normal" +
-                  " " +
-                  "text-[#f2295b]"
+                  router?.pathname === "/"
+                    ? "text-[#415161] text-[0.9rem] font-normal" +
+                      " " +
+                      "text-[#f2295b]"
+                    : "text-[#415161] text-[0.9rem] font-normal"
                 }
               >
                 HOME
@@ -28,8 +33,14 @@ function Header() {
             </li>
             <li className="">
               <Link
-                href="/"
-                className={"text-[#415161] text-[0.9rem] font-normal"}
+                href="/products"
+                className={
+                  router?.pathname === "/products"
+                    ? "text-[#415161] text-[0.9rem] font-normal" +
+                      " " +
+                      "text-[#f2295b]"
+                    : "text-[#415161] text-[0.9rem] font-normal"
+                }
               >
                 ALL PRODUCTS
               </Link>
