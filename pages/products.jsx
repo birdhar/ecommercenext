@@ -6,6 +6,7 @@ import "react-multi-carousel/lib/styles.css";
 import axios from "axios";
 import { useInView } from "react-intersection-observer";
 import { IndianRupeeFormatter } from "@/utils/IndianRupeeFormatter";
+import Link from "next/link";
 
 function AllProducts() {
   const responsive = {
@@ -90,9 +91,9 @@ function AllProducts() {
           slidesToSlide={1}
           keyBoardControl={true}
           arrows={false}
-          containerClass="carousel-container"
-          dotListClass="custom-dot-list-style"
-          itemClass="carousel-item-padding-40-px"
+          containerclassName="carousel-container"
+          dotListclassName="custom-dot-list-style"
+          itemclassName="carousel-item-padding-40-px"
         >
           {carousalItems?.map((item, index) => (
             <div className={style.herosection} key={index}>
@@ -114,7 +115,8 @@ function AllProducts() {
 
         <div className={style.categorylist}>
           {products?.map((product) => (
-            <div
+            <Link
+              href={`/product/${product?._id}`}
               ref={ref}
               className={style.product}
               key={product?._id}
@@ -155,7 +157,7 @@ function AllProducts() {
                               <path
                                 fill-rule="evenodd"
                                 d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                                clip-rule="evenodd"
+                                clipRule="evenodd"
                               />
                             </svg>
                           ) : (
@@ -181,7 +183,7 @@ function AllProducts() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
         <div></div>

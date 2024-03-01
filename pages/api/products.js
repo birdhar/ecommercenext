@@ -9,8 +9,7 @@ export default async function handler(req, res) {
   if (method === "GET") {
     if (req?.query?.id) {
       res.json(await Product.findOne({ _id: req?.query?.id }));
-    }
-    if (req.query?.page && req.query?.page) {
+    } else if (req.query?.page && req.query?.page) {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const skip = (page - 1) * limit;

@@ -50,9 +50,9 @@ function HeroSection() {
         slidesToSlide={1}
         keyBoardControl={true}
         arrows={false}
-        containerClass="carousel-container"
-        dotListClass="custom-dot-list-style"
-        itemClass="carousel-item-padding-40-px"
+        containerclassName="carousel-container"
+        dotListclassName="custom-dot-list-style"
+        itemclassName="carousel-item-padding-40-px"
       >
         {carousalItems?.map((item, index) => (
           <div className={style.herosection} key={index}>
