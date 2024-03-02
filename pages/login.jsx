@@ -1,26 +1,26 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
+import { Notfication } from "@/validation/Snackbar";
 
 function Login() {
   const router = useRouter();
-
-  const [error, setError] = useState();
+  const { next } = router.query;
+  const [notificationState, setNotificationState] = useState({
+    msg: "",
+    run: false,
+    status: "error",
+  });
+  const [loading, setLoading] = useState(false);
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   // const num = 2;
-  //   // if (num === 2) {
-  //   router.push("/products");
-  //   // }
-  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     const res = await signIn("credentials", {
       email: loginData.email,
       password: loginData.password,
@@ -29,13 +29,29 @@ function Login() {
     });
 
     if (res.ok) {
-      router.push("/");
+      router.push(next || "/");
+      setLoading(false);
+    } else {
+      setNotificationState({
+        msg: res.error,
+        run: true,
+        status: "error",
+      });
+      setLoading(false);
     }
   };
 
   const handleGoogleSignIn = async () => {
-    await signIn("google", { callbackUrl: "http://localhost:3000" });
+    await signIn("google", { callbackUrl: "/" });
   };
+  useEffect(() => {
+    if (next) {
+      // If 'next' query parameter exists, save it in session/local storage or use another method to persist it
+      // For simplicity, let's assume we save it in session storage
+      sessionStorage.setItem("redirectUrl", next);
+    }
+  }, [next]);
+
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -94,19 +110,19 @@ function Login() {
                 />
               </div>
               <div className="flex items-center justify-between">
-                <div>{error}</div>
-                <a
-                  href="#"
+                <div></div>
+                <Link
+                  href="/password/forgot"
                   className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Forgot password?
-                </a>
+                </Link>
               </div>
               <button
                 type="submit"
                 className="w-full text-white bg-gray-400 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
-                Sign in
+                {loading ? "Signing in.." : "Sign in"}
               </button>
               <button
                 type="button"
@@ -114,7 +130,7 @@ function Login() {
                 className="w-full text-black bg-white border flex gap-2 justify-center items-center hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
                 <img src="/images/google-icon.png" className="h-6 w-6" alt="" />
-                Sign in
+                {loading ? "Signing in.." : "Sign in"}
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Don’t have an account yet?{" "}
@@ -129,6 +145,17 @@ function Login() {
           </div>
         </div>
       </div>
+      {notificationState.run && (
+        <Notfication
+          msg={notificationState.msg}
+          run={notificationState.run}
+          setRun={() =>
+            setNotificationState({ msg: "", run: false, status: "error" })
+          }
+          postiton="bottom"
+          type={notificationState.status || "error"}
+        />
+      )}
     </section>
   );
 }

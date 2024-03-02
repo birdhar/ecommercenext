@@ -7,6 +7,7 @@ import axios from "axios";
 import { useInView } from "react-intersection-observer";
 import { IndianRupeeFormatter } from "@/utils/IndianRupeeFormatter";
 import Link from "next/link";
+import { getSession } from "next-auth/react";
 
 function AllProducts() {
   const responsive = {
@@ -190,6 +191,24 @@ function AllProducts() {
       </div>
     </Layout>
   );
+}
+
+export async function getServerSideProps({ req }) {
+  const session = await getSession({ req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: `/login?next=${"/products"}`,
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+      session,
+    },
+  };
 }
 
 export default AllProducts;

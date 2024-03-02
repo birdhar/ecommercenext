@@ -7,62 +7,19 @@ import bcrypt from "bcryptjs";
 import { mongooseConnect } from "@/lib/mongoose";
 import { User } from "@/models/user";
 
-// export const authproviders = {
-//   providers: [
-//     GoogleProvider({
-//       clientId: process.env.GOOGLE_ID,
-//       clientSecret: process.env.GOOGLE_SECRET,
-//     }),
-//     CredentialsProvider({
-//       name: "credentials",
-//       credentials: {},
-//       async authorize(credentials) {
-//         const { email, password } = credentials;
-
-//         try {
-//           await mongooseConnect();
-//           const user = await User.findOne({ email });
-
-//           if (!user) {
-//             return null;
-//           }
-//           const correctPassword = await bcrypt.compare(password, user.password);
-//           if (!correctPassword) {
-//             return null;
-//           }
-//           return user;
-//         } catch (error) {
-//           throw new Error(error);
-//         }
-//       },
-//     }),
-//   ],
-//   session: {
-//     jwt: true,
-//     callbacks: {
-//       async session({ session, user }) {
-//         if (user) {
-//           session.user.name = user.name;
-//           session.user.email = user.email;
-//           session.user.id = user.id;
-//         }
-//         console.log("session:", session);
-//         return session;
-//       },
-//     },
-//   },
-//   secret: process.env.NEXTAUTH_SECRET,
-//   pages: {
-//     signIn: "/login",
-//   },
-//   adapter: MongoDBAdapter(clientPromise),
-// };
-
 export const authproviders = {
   providers: [
     GoogleProvider({
       clientId: process.env.NEW_GOOGLE_ID,
       clientSecret: process.env.NEW_GOOGLE_SECRET,
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          role: profile.role ?? "User",
+        };
+      },
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -80,14 +37,44 @@ export const authproviders = {
         );
 
         if (!correctPassword || credentials.email !== user.email) {
-          throw new Error("Invalid email password");
+          throw new Error("Invalid credentials");
         }
         return user;
       },
     }),
   ],
+
   session: {
     strategy: "jwt",
+  },
+
+  callbacks: {
+    //   async signIn({ user, account, metadata }) {
+    //     await mongooseConnect();
+
+    //     try {
+    //       const userToFind = await User.findOne({ email: user.email });
+    //       if (userToFind) {
+    //         return true;
+    //       }
+    //       await User.create({ email: user.email, name: user.name, role: "User" });
+    //     } catch (error) {
+    //       console.log("Sign in Error");
+    //       return false;
+    //     }
+    //   },
+    async jwt({ token, user }) {
+      // if (user) {
+      //   user.role = user.role === null ? "User" : user.role;
+      //   token.user = user;
+      // }
+      return { ...token, ...user };
+    },
+    async session({ session, token, user }) {
+      session.user.role = token.role;
+
+      return session;
+    },
   },
 
   adapter: MongoDBAdapter(clientPromise),

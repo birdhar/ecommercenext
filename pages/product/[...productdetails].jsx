@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { IndianRupeeFormatter } from "@/utils/IndianRupeeFormatter";
+import { getSession } from "next-auth/react";
 
 function ProductDetails() {
   const router = useRouter();
@@ -154,6 +155,26 @@ function ProductDetails() {
       </div>
     </Layout>
   );
+}
+
+export async function getServerSideProps({ req }) {
+  const session = await getSession({ req });
+
+  const { url } = req;
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: `/login?next=${url}`,
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+      session,
+    },
+  };
 }
 
 export default ProductDetails;

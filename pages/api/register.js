@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     if (user) {
       res.json("user already exists");
     } else {
-      User.create({ name, email, password: hashedPassword });
+      User.create({ name, email, password: hashedPassword, role: "User" });
       res.json("user created");
     }
   }

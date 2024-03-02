@@ -1,22 +1,19 @@
 "use client";
-import AdSellFeature from "@/components/AdSellFeature";
-import Categories from "@/components/Categories";
-import Drawer from "@/components/Drawer";
-import Header from "@/components/Header";
-import HeroSection from "@/components/Herosection";
-import LatestProducts from "@/components/LatestProducts";
 import Layout from "@/components/Layout";
-import Notification from "@/components/Notification";
 import { getSession, useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
+const HeroSection = dynamic(() => import("@/components/Herosection"));
+const LatestProducts = dynamic(() => import("@/components/LatestProducts"));
+const Notification = dynamic(() => import("@/components/Notification"));
+const Categories = dynamic(() => import("@/components/Categories"));
+const AdSellFeature = dynamic(() => import("@/components/AdSellFeature"));
 
 function Home(params) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   return (
     <Layout>
-      {session?.user?.email}
       <HeroSection />
-
       <LatestProducts />
       <AdSellFeature />
       <Categories />
@@ -31,7 +28,7 @@ export async function getServerSideProps({ req }) {
   if (!session) {
     return {
       redirect: {
-        destination: "/login",
+        destination: `/login?next=${"/"}`,
         permanent: false,
       },
     };
