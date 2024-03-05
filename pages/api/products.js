@@ -1,10 +1,15 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import { Product } from "@/models/Product";
-import { checkAdmin } from "./auth/[...nextauth]";
+import { getSession } from "next-auth/react";
 
 export default async function handler(req, res) {
   const { method } = req;
-  await checkAdmin(req, res);
+  const session = await getSession({ req });
+
+  if (!session || session.user.role !== "Admin") {
+    return res.status(401).json({ error: "You are not authorized" });
+  }
+
   await mongooseConnect();
 
   if (method === "GET") {
@@ -16,12 +21,14 @@ export default async function handler(req, res) {
   }
 
   if (method === "POST") {
-    const { name, description, price, image, category, features } = req.body;
+    const { name, description, price, rating, image, category, features } =
+      req.body;
 
     const product = await Product.create({
       name,
       description,
       price,
+      rating,
       image,
       category,
       features,
@@ -30,10 +37,11 @@ export default async function handler(req, res) {
   }
 
   if (method === "PUT") {
-    const { name, description, price, id, category, features } = req.body;
+    const { name, description, price, rating, id, category, features } =
+      req.body;
     await Product.updateOne(
       { _id: id },
-      { name, description, price, category, features }
+      { name, description, price, rating, category, features }
     );
     res.json(true);
   }

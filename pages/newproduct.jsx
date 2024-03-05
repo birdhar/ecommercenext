@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ViewProduct from "@/components/ViewProduct";
 import Link from "next/link";
+import { Notfication } from "./validation/Snackbar";
 
 function Newproduct() {
   const router = useRouter();
@@ -16,14 +17,32 @@ function Newproduct() {
   const [formData, setFormData] = useState({
     name: "",
     category: "",
+    rating: 0,
     description: "",
     price: 0,
     image: "",
   });
+  const [notificationState, setNotificationState] = useState({
+    msg: "",
+    run: false,
+    status: "error",
+  });
   useEffect(() => {
-    axios.get("/api/categories").then((res) => {
-      setCategories(res.data);
-    });
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get("/api/categories");
+
+        setCategories(res.data);
+      } catch (error) {
+        setNotificationState({
+          msg: error?.response?.data?.error ?? "Unauthorized access",
+          run: true,
+          status: "error",
+        });
+      }
+    };
+
+    fetchCategories();
   }, []);
   const addProduct = async (e) => {
     e.preventDefault();
@@ -123,6 +142,25 @@ function Newproduct() {
                 {category?.name}
               </option>
             ))}
+          </select>
+          <label className="mb-2">Product Rating</label>
+          <select
+            required
+            onChange={(e) => {
+              setFormData({ ...formData, rating: parseInt(e.target.value) });
+            }}
+          >
+            <option value="">Select Rating</option>
+
+            {[...Array(5)].map((item, index) => {
+              const givenRating = index + 1;
+
+              return (
+                <option value={givenRating} key={index}>
+                  {givenRating}
+                </option>
+              );
+            })}
           </select>
           <label className="mb-[2rem]">Product Features</label>
           {featurestoFill?.map((feat, index) => (
@@ -225,6 +263,17 @@ function Newproduct() {
           open={open}
           hideModal={() => setOpen(false)}
           image={formData?.image}
+        />
+      )}
+      {notificationState.run && (
+        <Notfication
+          msg={notificationState.msg}
+          run={notificationState.run}
+          setRun={() =>
+            setNotificationState({ msg: "", run: false, status: "error" })
+          }
+          postiton="bottom"
+          type={notificationState.status || "error"}
         />
       )}
     </Layout>

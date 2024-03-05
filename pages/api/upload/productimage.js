@@ -1,8 +1,13 @@
 import multiparty from "multiparty";
-import { checkAdmin } from "../auth/[...nextauth]";
+import { getSession } from "next-auth/react";
+
 export default async function handler(req, res) {
   const form = multiparty.Form();
-  checkAdmin(req, res);
+  const session = await getSession({ req });
+
+  if (!session || session.user.role !== "Admin") {
+    return res.status(401).json({ error: "You are not authorized" });
+  }
 
   form.parse(req, (error, fields, files) => {
     console.log(files.length);

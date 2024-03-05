@@ -9,6 +9,7 @@ import Error from "@/components/Error";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { Notfication } from "./validation/Snackbar";
 
 function Products() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -19,18 +20,43 @@ function Products() {
     delete: false,
     view: false,
   });
+  const [notificationState, setNotificationState] = useState({
+    msg: "",
+    run: false,
+    status: "error",
+  });
   useEffect(() => {
-    axios.get("/api/products").then((res) => {
-      setProducts(res.data);
-      setFilteredItems(res.data);
-    });
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("/api/products");
+        setProducts(res.data);
+        setFilteredItems(res.data);
+      } catch (error) {
+        setNotificationState({
+          msg: error?.response?.data?.error ?? "Unauthorized access",
+          run: true,
+          status: "error",
+        });
+      }
+    };
+    fetchData();
   }, []);
 
   useEffect(() => {
-    axios.get("/api/products").then((res) => {
-      setProducts(res.data);
-      setFilteredItems(res.data);
-    });
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("/api/products");
+        setProducts(res.data);
+        setFilteredItems(res.data);
+      } catch (error) {
+        setNotificationState({
+          msg: error?.response?.data?.error ?? "Unauthorized access",
+          run: true,
+          status: "error",
+        });
+      }
+    };
+    fetchData();
   }, [open]);
 
   useEffect(() => {
@@ -138,6 +164,17 @@ function Products() {
           open={open.view}
           hideModal={() => setOpen({ ...open, view: false })}
           image={productt?.image}
+        />
+      )}
+      {notificationState.run && (
+        <Notfication
+          msg={notificationState.msg}
+          run={notificationState.run}
+          setRun={() =>
+            setNotificationState({ msg: "", run: false, status: "error" })
+          }
+          postiton="bottom"
+          type={notificationState.status || "error"}
         />
       )}
     </>

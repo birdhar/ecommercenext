@@ -5,11 +5,15 @@ import {
 } from "@aws-sdk/client-s3";
 import formidable from "formidable";
 import fs from "fs";
-import { checkAdmin } from "./auth/[...nextauth]";
+import { getSession } from "next-auth/react";
 
 async function handlePostFormReq(req, res) {
   const form = formidable({ multiple: true });
-  checkAdmin(req, res);
+  const session = await getSession({ req });
+
+  if (!session || session.user.role !== "Admin") {
+    return res.status(401).json({ error: "You are not authorized" });
+  }
 
   const formData = new Promise((resolve, reject) => {
     form.parse(req, async (err, fields, files) => {

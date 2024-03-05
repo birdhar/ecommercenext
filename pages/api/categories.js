@@ -1,21 +1,29 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import { Category } from "@/models/Category";
 import { checkAdmin } from "./auth/[...nextauth]";
+import { getServerSession } from "next-auth";
+import { authproviders } from "./auth/[...nextauth]";
 
 export default async function handle(req, res) {
   const { method } = req;
-  await checkAdmin(req, res);
+  const session = await getServerSession(req, res, authproviders);
+
+  if (!session || session.user.role !== "Admin") {
+    return res.status(401).json({ error: "You are not authorized" });
+  }
+
   await mongooseConnect();
 
   if (method === "POST") {
-    const { name, parentCategory, features } = req.body;
+    const { name, parentCategory, image, features } = req.body;
 
     const createdCategory = await Category.create({
       name,
       parent: parentCategory !== "" ? parentCategory : null,
       features,
+      image: image,
     });
-    res.json(createdCategory);
+    res.json("createdCategory");
   }
 
   if (method === "GET") {
@@ -28,10 +36,10 @@ export default async function handle(req, res) {
     res.json(true);
   }
   if (method === "PUT") {
-    const { name, parentCategory, features, id } = req.body;
+    const { name, parentCategory, features, image, id } = req.body;
     await Category.updateOne(
       { _id: id },
-      { name, parent: parentCategory, features }
+      { name, parent: parentCategory, image, features }
     );
     res.json(true);
   }
