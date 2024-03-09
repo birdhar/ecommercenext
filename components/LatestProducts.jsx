@@ -4,6 +4,7 @@ import axios from "axios";
 import { IndianRupeeFormatter } from "@/utils/IndianRupeeFormatter";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import Link from "next/link";
 
 function LatestProducts() {
   const [products, setProducts] = useState([]);
@@ -36,7 +37,8 @@ function LatestProducts() {
 
       <div className={style.categorylist}>
         {products?.map((product) => (
-          <div
+          <Link
+            href={`/product/${product?._id}`}
             className={style.product}
             key={product?._id}
             data-aos="fade-up"
@@ -96,7 +98,7 @@ function LatestProducts() {
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

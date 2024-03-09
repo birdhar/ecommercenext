@@ -4,9 +4,10 @@ const UserSchema = new Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
-    password: { type: String, required: true },
+    password: { type: String },
     password_reset_token: { type: String, required: false },
     role: { type: String, required: false },
+    address: { type: Object, required: false },
   },
   { timestamps: true }
 );

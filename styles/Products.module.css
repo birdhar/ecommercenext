@@ -222,6 +222,9 @@
   padding: 0.5rem 1rem;
   border-radius: 1.25rem;
   font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 .btnfill {
   background-color: rgb(216, 115, 115);
@@ -230,4 +233,88 @@
 .btnoutline {
   border: 0.1px solid #f16868;
   color: #905353;
+}
+
+.prodtextcount {
+  padding: 1.5rem 2rem;
+}
+.prodtextcount h6 {
+  font-weight: 700;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #282c3f;
+  max-width: 400px;
+  text-transform: capitalize;
+}
+.prodtextcountspan {
+  color: #878b94;
+  font-weight: 500;
+}
+.productfeatures {
+  padding: 1rem 2rem;
+  padding-left: 0;
+  border-bottom: 0.1px solid rgb(231, 228, 228);
+}
+.productfeaturesh5 {
+  font-weight: 700;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #282c3f;
+  max-width: 400px;
+  font-size: 1.15rem;
+  text-transform: capitalize;
+}
+.productfeaturesul {
+  margin-top: 1rem;
+}
+.productfeaturesli {
+  display: flex;
+}
+.productfeaturesli p,
+.productfeatureslispan {
+  font-weight: 600;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #38393d;
+  max-width: 400px;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  margin-bottom: 0.5rem;
+  width: 6rem;
+}
+.productfeatureslispan {
+  color: #505051;
+  font-weight: 500;
+}
+.deliverystatus {
+  padding: 1rem 0;
+}
+.deliveryinput {
+  outline: none;
+  width: 15rem;
+  font-size: 0.85rem;
+}
+.deliveryinput::placeholder {
+  font-size: 0.85rem;
+}
+.deliveryform {
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  border: 0.1px solid rgb(237, 233, 233);
+  border-radius: 0.3rem;
+}
+.deliverybtn {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #626161;
+  cursor: pointer;
+}
+.deliverybtnActive {
+  color: #f27d7d;
 }

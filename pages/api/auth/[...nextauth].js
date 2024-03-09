@@ -5,9 +5,10 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import clientPromise from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
 import { mongooseConnect } from "@/lib/mongoose";
-import { User } from "@/models/user";
+import { User } from "@/models/User";
 
 export const authproviders = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.NEW_GOOGLE_ID,
@@ -17,6 +18,7 @@ export const authproviders = {
           id: profile.sub,
           name: profile.name,
           email: profile.email,
+          image: profile.picture,
           role: profile.role ?? "User",
         };
       },
@@ -49,25 +51,7 @@ export const authproviders = {
   },
 
   callbacks: {
-    //   async signIn({ user, account, metadata }) {
-    //     await mongooseConnect();
-
-    //     try {
-    //       const userToFind = await User.findOne({ email: user.email });
-    //       if (userToFind) {
-    //         return true;
-    //       }
-    //       await User.create({ email: user.email, name: user.name, role: "User" });
-    //     } catch (error) {
-    //       console.log("Sign in Error");
-    //       return false;
-    //     }
-    //   },
     async jwt({ token, user }) {
-      // if (user) {
-      //   user.role = user.role === null ? "User" : user.role;
-      //   token.user = user;
-      // }
       return { ...token, ...user };
     },
     async session({ session, token, user }) {

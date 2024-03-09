@@ -5,9 +5,19 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { IndianRupeeFormatter } from "@/utils/IndianRupeeFormatter";
 import { getSession } from "next-auth/react";
+import { pincodes } from "@/constatns/constatnt";
+import { Notfication } from "@/validation/Snackbar";
+import Link from "next/link";
+import { useSelector, useDispatch } from "react-redux";
+import { addProductToCart } from "@/redux/cartSlice";
 
 function ProductDetails() {
   const router = useRouter();
+
+  const regex = /^[0-9]+$/;
+  const dispatch = useDispatch();
+  const { items } = useSelector((store) => store.cart);
+  const [pincode, setPincode] = useState("");
   const [showFullText, setShowFullText] = useState(false);
   const id = router?.query?.productdetails?.[0];
   const [product, setProduct] = useState({});
@@ -15,6 +25,11 @@ function ProductDetails() {
   const toggleText = () => {
     setShowFullText(!showFullText);
   };
+  const [notificationState, setNotificationState] = useState({
+    msg: "",
+    run: false,
+    status: "error",
+  });
   useEffect(() => {
     if (!id) {
       return;
@@ -23,6 +38,26 @@ function ProductDetails() {
       setProduct(res.data);
     });
   }, [id]);
+  const handleCheckPincode = () => {
+    const isDeliveryAvailable = pincodes.includes(pincode);
+    setNotificationState({
+      msg: isDeliveryAvailable
+        ? "Delivery available"
+        : "Sorry! Delivery not available",
+      run: true,
+      status: isDeliveryAvailable ? "success" : "error",
+    });
+  };
+  const productInCart = items?.filter((item) => {
+    return item?.info?._id === product?._id;
+  });
+  const handleAddProduct = () => {
+    if (productInCart?.length > 0) {
+      router.push("/cart");
+    } else {
+      dispatch(addProductToCart({ info: product, count: 1 }));
+    }
+  };
 
   return (
     <Layout>
@@ -108,7 +143,7 @@ function ProductDetails() {
               <IndianRupeeFormatter amount={product?.price} />
             </h5>
 
-            <div className={style.countflex}>
+            {/* <div className={style.countflex}>
               <div className={style.countcontainer}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -140,18 +175,107 @@ function ProductDetails() {
               <p className={style.availtext}>
                 Only <span>12</span> items available! Don't miss it
               </p>
-            </div>
+            </div> */}
 
             <div className={style.btnflex}>
-              <button className={`${style.btn} ${style.btnfill}`}>
-                Buy Now
+              <button
+                className={`${style.btn} ${style.btnfill}`}
+                onClick={handleAddProduct}
+                type="button"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  className="w-4 h-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                  />
+                </svg>
+                {productInCart?.length > 0 ? "Go to Cart" : "Add to Cart"}
               </button>
               <button className={`${style.btn} ${style.btnoutline}`}>
-                Add to Cart
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  className="w-4 h-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                  />
+                </svg>
+                WishList
               </button>
+            </div>
+
+            <div className={style.productfeatures}>
+              <h5 className={style.productfeaturesh5}>Product Features</h5>
+
+              <ul className={style.productfeaturesul}>
+                {product?.features &&
+                  Object?.entries(product?.features)?.map(([key, value]) => (
+                    <li className={style.productfeaturesli} key={key}>
+                      <p>{key} : </p>
+                      <span className={style.productfeatureslispan}>
+                        {value}
+                      </span>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+
+            <div className={style.deliverystatus}>
+              <h5 className={style.productfeaturesh5}>
+                {" "}
+                Check Delivery Status
+              </h5>
+              <form className={style.deliveryform}>
+                <input
+                  className={style.deliveryinput}
+                  type="text"
+                  placeholder="Enter Pincode"
+                  value={pincode}
+                  onChange={(e) => setPincode(e.target.value)}
+                />
+                <button
+                  type="button"
+                  disabled={
+                    regex.test(pincode) && pincode.length === 6 ? false : true
+                  }
+                  className={
+                    regex.test(pincode) && pincode.length === 6
+                      ? `${style.deliverybtn} ${style.deliverybtnActive}`
+                      : style.deliverybtn
+                  }
+                  onClick={handleCheckPincode}
+                >
+                  Check
+                </button>
+              </form>
             </div>
           </div>
         </div>
+        {notificationState.run && (
+          <Notfication
+            msg={notificationState.msg}
+            run={notificationState.run}
+            setRun={() =>
+              setNotificationState({ msg: "", run: false, status: "error" })
+            }
+            postiton="bottom"
+            type={notificationState.status || "error"}
+          />
+        )}
       </div>
     </Layout>
   );

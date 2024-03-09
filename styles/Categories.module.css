@@ -31,6 +31,7 @@
   justify-content: center;
   align-items: center;
   border-radius: 1.5rem;
+  cursor: pointer;
 }
 .categoryimg {
   padding: 0.5rem;
@@ -197,6 +198,7 @@
   text-align: center;
   color: #dad8d8;
 }
+
 @media only screen and (max-width: 1340px) {
   .adsellcontainer {
     padding: 6rem 10rem;

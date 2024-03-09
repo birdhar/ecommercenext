@@ -3,8 +3,10 @@ import style from "../styles/Categories.module.css";
 import axios from "axios";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { useRouter } from "next/router";
 
 function Categories() {
+  const router = useRouter();
   const [categories, setCategories] = useState([]);
   useEffect(() => {
     axios.get("/api/categories").then((res) => {
@@ -15,6 +17,10 @@ function Categories() {
   const filteredCategories = categories?.filter((cat) => {
     return cat?.parent === null;
   });
+
+  const handleClickRoute = (url) => {
+    router.push(url);
+  };
 
   return (
     <div className={style.categories}>
@@ -32,6 +38,7 @@ function Categories() {
             key={category?._id}
             className={style.category}
             data-aos="fade-left"
+            onClick={() => handleClickRoute(`/category/${category?.name}`)}
           >
             <div className={style.categoryimg}>
               <img src={category?.image} alt="" />

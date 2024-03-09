@@ -1,15 +1,57 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Drawer from "./Drawer";
 import { useRouter } from "next/router";
+import axios from "axios";
+import { useSelector } from "react-redux";
 // 475d71 df6767
 function Header() {
   const router = useRouter();
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const { totalQuantity } = useSelector((store) => store.cart);
+  const [notificationState, setNotificationState] = useState({
+    msg: "",
+    run: false,
+    status: "error",
+  });
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get("/api/categories");
+
+      setCategories(res.data);
+    } catch (error) {
+      setNotificationState({
+        msg: error?.response?.data?.error ?? "Unauthorized access",
+        run: true,
+        status: "error",
+      });
+    }
+  };
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      const filtered = categories?.filter((item) =>
+        item?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
+      );
+      setFilteredItems(filtered);
+    }, 1000);
+
+    return () => clearTimeout(delay);
+  }, [searchQuery, categories]);
+  const handleClickRoute = (url) => {
+    router.push(url);
+  };
 
   return (
     <>
-      <header className="bg-[#ffffff] p-4 px-4 flex items-center justify-between w-full sm:px-8">
+      <header className="bg-[#ffffff] sticky z-10 shadow-[0 4px 12px 0 rgba(0,0,0,.05)] border-b border-gray-100 top-0 p-4 px-4 flex items-center justify-between w-full sm:px-8">
         <Link href="/" className="flex  items-start gap-2 ">
           <img src="/images/logo-blue.png" alt="" className="w-8 h-8" />
           <p className="text-[#f16868] text-[1.53rem] font-semibold">EMart</p>
@@ -63,17 +105,39 @@ function Header() {
             </li>
           </ul>
 
-          <div className="w-[15rem] hidden sm:block">
-            <input
-              type="search"
-              className="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-[0.8rem] font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
-              id="exampleSearch"
-              placeholder="Search..."
-            />
+          <div className="w-[15rem] hidden relative sm:block">
+            <div className="w-full absolute">
+              <input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-[0.8rem] font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+                id="exampleSearch"
+                placeholder="Search..."
+              />
+            </div>
+            {searchQuery !== "" && (
+              <ul className="absolute z-10 border top-[2rem] w-full">
+                {filteredItems?.map((cat) => (
+                  // <Link href={`category/${cat?.name}`} key={cat?._id}>
+                  //   <li className="border-b p-2 text-neutral-700 text-[0.8rem]">
+                  //     {cat?.name}
+                  //   </li>
+                  // </Link>
+
+                  <li
+                    key={cat?._id}
+                    className="border-b p-2 text-neutral-700 cursor-pointer text-[0.8rem]"
+                    onClick={() => handleClickRoute(`/category/${cat?.name}`)}
+                  >
+                    {cat?.name}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <Link
-            href="/"
+            href="/cart"
             className={
               "text-[#415161] text-[0.9rem] font-normal hidden sm:block"
             }
@@ -90,7 +154,7 @@ function Header() {
               </svg>
 
               <div className="absolute top-[-0.9rem] right-[-0.9rem] bg-[#f16868] text-[#fff] h-[1.3rem] w-[1.3rem] rounded-full text-[0.7rem] grid place-items-center">
-                0
+                {totalQuantity}
               </div>
             </div>
           </Link>

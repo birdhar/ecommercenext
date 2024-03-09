@@ -1,5 +1,5 @@
 import { mongooseConnect } from "@/lib/mongoose";
-import { User } from "@/models/user";
+import { User } from "@/models/User";
 import bcrypt from "bcryptjs";
 
 export default async function handler(req, res) {
