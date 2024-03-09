@@ -103,6 +103,10 @@ function Cart() {
       userAddress: userAddress,
       productInfos: productInfos,
     });
+
+    if (res.data.url) {
+      window.open(res.data.url, "_blank");
+    }
   };
 
   if (items?.length <= 0) {
