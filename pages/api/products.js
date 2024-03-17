@@ -1,12 +1,18 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import { Product } from "@/models/Product";
-import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authproviders } from "./auth/[...nextauth]";
+import { adminEmails } from "@/utils/constant";
 
 export default async function handler(req, res) {
   const { method } = req;
-  const session = await getSession({ req });
+  const session = await getServerSession(req, res, authproviders);
 
-  if (!session || session.user.role !== "Admin") {
+  if (
+    !session ||
+    session.user.role !== "Admin" ||
+    !adminEmails?.includes(session?.user?.email)
+  ) {
     return res.status(401).json({ error: "You are not authorized" });
   }
 

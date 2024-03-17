@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Loader from "./Loader";
 import Error from "./Error";
+import { adminEmails } from "@/utils/constant";
 
 function Layout({ children }) {
   const router = useRouter();
@@ -25,7 +26,10 @@ function Layout({ children }) {
       </div>
     );
   }
-  if (session?.user?.role !== "Admin") {
+  if (
+    session?.user?.role !== "Admin" ||
+    !adminEmails?.includes(session?.user?.email)
+  ) {
     return (
       <div className="lg:px-24 lg:py-24 md:py-20 md:px-44 px-4 py-24 items-center flex justify-center flex-col-reverse lg:flex-row md:gap-28 gap-16">
         <div className="xl:pt-24 w-full xl:w-1/2 relative pb-12 lg:pb-0">
@@ -80,7 +84,7 @@ function Layout({ children }) {
           onClick={() => setOpenDrawer(true)}
         >
           <path
-            stroke-linecap="round"
+            strokeLinecap="round"
             stroke-linejoin="round"
             d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
           />

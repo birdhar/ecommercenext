@@ -10,10 +10,12 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Notfication } from "./validation/Snackbar";
+import { CircularProgress } from "@mui/material";
 
 function Products() {
   const [searchQuery, setSearchQuery] = useState("");
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [filteredItems, setFilteredItems] = useState([]);
   const [productt, setProductt] = useState(null);
   const [open, setOpen] = useState({
@@ -61,10 +63,12 @@ function Products() {
 
   useEffect(() => {
     const delay = setTimeout(() => {
+      setLoading(true);
       const filtered = products.filter((item) =>
         item?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
       );
       setFilteredItems(filtered);
+      setLoading(false);
     }, 1000);
 
     return () => clearTimeout(delay);
@@ -73,7 +77,22 @@ function Products() {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
-
+  if (loading) {
+    return (
+      <Layout>
+        <div className="w-full">
+          <div className="flex mb-4 justify-between items-center mt-[-0.1rem] ">
+            <h4 className=" text-[#164e63] font-medium text-[1.4rem] hidden md:block">
+              Products
+            </h4>
+          </div>
+          <div className="w-full min-h-[60vh] grid place-items-center">
+            <CircularProgress style={{ color: "#6CB4EE" }} />
+          </div>
+        </div>
+      </Layout>
+    );
+  }
   return (
     <>
       <Layout>
@@ -82,12 +101,13 @@ function Products() {
             <h4 className=" text-[#164e63] font-medium text-[1.4rem] hidden md:block">
               Procuct List
             </h4>
+
             <div className="w-full md:w-fit">
               <div className="flex gap-2 items-center justify-between">
-                <div class="relative  flex  flex-wrap items-stretch flex-1 sm:w-[20rem]">
+                <div className="relative  flex  flex-wrap items-stretch flex-1 sm:w-[20rem]">
                   <input
                     type="search"
-                    class="relative m-0 -mr-0.5 block min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+                    className="relative m-0 -mr-0.5 block min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
                     placeholder="Search"
                     aria-label="Search"
                     aria-describedby="button-addon1"
@@ -106,10 +126,10 @@ function Products() {
                       viewBox="0 0 24 24"
                       stroke-width="1.5"
                       stroke="currentColor"
-                      class="w-4 h-4"
+                      className="w-4 h-4"
                     >
                       <path
-                        stroke-linecap="round"
+                        strokeLinecap="round"
                         stroke-linejoin="round"
                         d="M12 4.5v15m7.5-7.5h-15"
                       />
@@ -120,6 +140,7 @@ function Products() {
               </div>
             </div>
           </div>
+
           <div className="w-full h-[calc(100vh-9rem)] p-2 overflow-scroll md:h-[calc(100vh-5rem)]">
             <table className=" mb-4">
               <thead>
@@ -149,6 +170,10 @@ function Products() {
               </tbody>
             </table>
           </div>
+
+          {/* <div className="w-full h-[calc(100vh-9rem)] p-2 grid place-items-center overflow-scroll md:h-[calc(100vh-5rem)] ">
+              No Data Found
+            </div> */}
         </div>
       </Layout>
 

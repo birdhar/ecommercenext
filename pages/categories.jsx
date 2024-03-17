@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import Loader from "@/components/Loader";
 import { TailSpin } from "react-loader-spinner";
 import { Notfication } from "./validation/Snackbar";
+import { CircularProgress } from "@mui/material";
 
 function Categories() {
   const router = useRouter();
@@ -81,7 +82,7 @@ function Categories() {
       image: formData.image,
       features: features?.map((f) => ({
         name: f?.name,
-        values: f?.value?.split(","),
+        values: f?.values ? f?.values : f?.value?.split(","),
       })),
       id: categoryy?._id,
     });
@@ -114,10 +115,12 @@ function Categories() {
   };
   useEffect(() => {
     const delay = setTimeout(() => {
+      setLoading(true);
       const filtered = categories?.filter((item) =>
         item?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
       );
       setFilteredItems(filtered);
+      setLoading(false);
     }, 1000);
 
     return () => clearTimeout(delay);
@@ -126,7 +129,6 @@ function Categories() {
     setSearchQuery(e.target.value);
   };
   const handleUploadFile = (e) => {
-    setLoading(true);
     setFormData({ ...formData, image: "" });
     const file = e.target?.files[0];
     const form = new FormData();
@@ -138,7 +140,6 @@ function Categories() {
     })
       .then((r) => r.json())
       .then((data) => {
-        setLoading(false);
         setFormData({ ...formData, image: data?.links?.[0] });
       })
       .catch((err) => {
@@ -146,7 +147,23 @@ function Categories() {
       });
   };
 
-  console.log(features);
+  if (loading) {
+    return (
+      <Layout>
+        <div className="w-full">
+          <div className="flex mb-4 justify-between items-center mt-[-0.1rem] ">
+            <h4 className=" text-[#164e63] font-medium text-[1.4rem] hidden md:block">
+              Categories
+            </h4>
+          </div>
+          <div className="w-full min-h-[60vh] grid place-items-center">
+            <CircularProgress style={{ color: "#6CB4EE" }} />
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <>
@@ -175,7 +192,7 @@ function Categories() {
                       }}
                     >
                       <path
-                        stroke-linecap="round"
+                        strokeLinecap="round"
                         stroke-linejoin="round"
                         d="M15.75 19.5 8.25 12l7.5-7.5"
                       />
@@ -242,10 +259,10 @@ function Categories() {
                             viewBox="0 0 24 24"
                             stroke-width="1.5"
                             stroke="currentColor"
-                            class="w-6 h-6"
+                            className="w-6 h-6"
                           >
                             <path
-                              stroke-linecap="round"
+                              strokeLinecap="round"
                               stroke-linejoin="round"
                               d="M12 4.5v15m7.5-7.5h-15"
                             />
@@ -293,7 +310,7 @@ function Categories() {
                       onClick={() => setForm(false)}
                     >
                       <path
-                        stroke-linecap="round"
+                        strokeLinecap="round"
                         stroke-linejoin="round"
                         d="M15.75 19.5 8.25 12l7.5-7.5"
                       />
@@ -359,10 +376,10 @@ function Categories() {
                             viewBox="0 0 24 24"
                             stroke-width="1.5"
                             stroke="currentColor"
-                            class="w-6 h-6"
+                            className="w-6 h-6"
                           >
                             <path
-                              stroke-linecap="round"
+                              strokeLinecap="round"
                               stroke-linejoin="round"
                               d="M12 4.5v15m7.5-7.5h-15"
                             />
@@ -404,12 +421,13 @@ function Categories() {
                   <h4 className=" text-[#164e63] font-medium text-[1.4rem] hidden md:block">
                     Category List
                   </h4>
+
                   <div className="w-full md:w-fit">
                     <div className="flex gap-2 items-center justify-between">
-                      <div class="relative  flex  flex-wrap items-stretch flex-1 sm:w-[20rem]">
+                      <div className="relative  flex  flex-wrap items-stretch flex-1 sm:w-[20rem]">
                         <input
                           type="search"
-                          class="relative m-0 -mr-0.5 block min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+                          className="relative m-0 -mr-0.5 block min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
                           placeholder="Search"
                           aria-label="Search"
                           aria-describedby="button-addon1"
@@ -429,10 +447,10 @@ function Categories() {
                             viewBox="0 0 24 24"
                             stroke-width="1.5"
                             stroke="currentColor"
-                            class="w-4 h-4"
+                            className="w-4 h-4"
                           >
                             <path
-                              stroke-linecap="round"
+                              strokeLinecap="round"
                               stroke-linejoin="round"
                               d="M12 4.5v15m7.5-7.5h-15"
                             />
@@ -443,6 +461,7 @@ function Categories() {
                     </div>
                   </div>
                 </div>
+
                 <div className="w-full h-[calc(100vh-9rem)] p-2 overflow-scroll md:h-[calc(100vh-5rem)]">
                   <table className="w-[100%] mb-4">
                     <thead>
@@ -479,10 +498,10 @@ function Categories() {
                                 viewBox="0 0 24 24"
                                 stroke-width="1.5"
                                 stroke="currentColor"
-                                class="w-4 h-4"
+                                className="w-4 h-4"
                               >
                                 <path
-                                  stroke-linecap="round"
+                                  strokeLinecap="round"
                                   stroke-linejoin="round"
                                   d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
                                 />
@@ -501,10 +520,10 @@ function Categories() {
                                 viewBox="0 0 24 24"
                                 stroke-width="1.5"
                                 stroke="currentColor"
-                                class="w-4 h-4"
+                                className="w-4 h-4"
                               >
                                 <path
-                                  stroke-linecap="round"
+                                  strokeLinecap="round"
                                   stroke-linejoin="round"
                                   d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
                                 />
@@ -516,6 +535,10 @@ function Categories() {
                     </tbody>
                   </table>
                 </div>
+
+                {/* <div className="w-full h-[calc(100vh-9rem)] p-2 grid place-items-center overflow-scroll md:h-[calc(100vh-5rem)] ">
+                    No Data Found
+                  </div> */}
               </>
             )}
 
@@ -544,7 +567,7 @@ function Categories() {
                 onClick={() => setIndex(1)}
               >
                 <path
-                  stroke-linecap="round"
+                  strokeLinecap="round"
                   stroke-linejoin="round"
                   d="M15.75 19.5 8.25 12l7.5-7.5"
                 />
@@ -596,9 +619,9 @@ function Categories() {
                       name="value"
                       required
                       value={
-                        index === 2 && open.edit
-                          ? feature?.values?.join(",")
-                          : feature.value
+                        feature.value
+                          ? feature.value
+                          : feature?.values?.join(",")
                       }
                       onChange={(e) => changeFeatureData(e, i)}
                       placeholder="Value"
@@ -617,10 +640,10 @@ function Categories() {
                         viewBox="0 0 24 24"
                         stroke-width="1.5"
                         stroke="currentColor"
-                        class="w-4 h-4"
+                        className="w-4 h-4"
                       >
                         <path
-                          stroke-linecap="round"
+                          strokeLinecap="round"
                           stroke-linejoin="round"
                           d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
                         />

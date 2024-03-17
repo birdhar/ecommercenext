@@ -38,12 +38,12 @@ export const authproviders = {
 
 export default NextAuth(authproviders);
 
-export async function checkAdmin(req, res) {
-  // const session = await getServerSession(req, res, authproviders);
-  // if (!session) {
-  //   res.status(401).json({
-  //     err: "You are not authorized.",
-  //   });
-  //   res.end();
-  // }
-}
+// export async function checkAdmin(req, res) {
+//   const session = await getServerSession(req, res, authproviders);
+//   // if (!session) {
+//   //   res.status(401).json({
+//   //     err: "You are not authorized.",
+//   //   });
+//   //   res.end();
+//   // }
+// }

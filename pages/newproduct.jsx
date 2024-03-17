@@ -92,7 +92,7 @@ function Newproduct() {
       return oldFeatures;
     });
   };
-
+  console.log(features);
   return (
     <Layout>
       <div className=" flex flex-col items-center">
@@ -107,7 +107,7 @@ function Newproduct() {
               className="w-6 h-6 cursor-pointer"
             >
               <path
-                stroke-linecap="round"
+                strokeLinecap="round"
                 stroke-linejoin="round"
                 d="M15.75 19.5 8.25 12l7.5-7.5"
               />
@@ -173,6 +173,7 @@ function Newproduct() {
                 value={features[feat?.name]}
                 onChange={(e) => addProductFeature(feat?.name, e.target.value)}
               >
+                <option value="Null">Select Feature</option>
                 {feat?.values?.map((val, i) => (
                   <option key={i} value={val}>
                     {val}
@@ -226,10 +227,10 @@ function Newproduct() {
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  class="w-6 h-6"
+                  className="w-6 h-6"
                 >
                   <path
-                    stroke-linecap="round"
+                    strokeLinecap="round"
                     stroke-linejoin="round"
                     d="M12 4.5v15m7.5-7.5h-15"
                   />

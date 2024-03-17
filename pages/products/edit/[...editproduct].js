@@ -2,13 +2,16 @@ import IndianRupeeFormatter from "@/components/IndianRupeeFormatter";
 import Layout from "@/components/Layout";
 import { Notfication } from "@/pages/validation/Snackbar";
 import axios from "axios";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { TailSpin } from "react-loader-spinner";
 
 function Editproduct() {
   const router = useRouter();
+  const featurestoFill = [];
   const [loading, setLoading] = useState(false);
+  const [features, setFeatures] = useState({});
   const [categories, setCategories] = useState([]);
   const id = router?.query?.editproduct?.[0];
   const [notificationState, setNotificationState] = useState({
@@ -22,6 +25,7 @@ function Editproduct() {
     price: 0,
     rating: 0,
     category: "",
+    image: "",
   });
 
   useEffect(() => {
@@ -56,13 +60,11 @@ function Editproduct() {
       }
     };
     fetchCategories();
-    // axios.get("/api/categories").then((res) => {
-    //   setCategories(res.data);
-    // });
   }, [id]);
+
   const editProduct = (e) => {
     e.preventDefault();
-    axios.put("/api/products", { ...formData, id }).then((res) => {
+    axios.put("/api/products", { ...formData, features, id }).then((res) => {
       if (res?.status === 200) {
         router.push("/products");
       }
@@ -114,12 +116,60 @@ function Editproduct() {
     return "₹" + formattedAmount;
   }
 
+  if (categories?.length > 0 && formData.category !== "") {
+    let targetCategory = categories?.find(
+      (cat) => cat?._id === formData.category
+    );
+    featurestoFill.push(...targetCategory?.features);
+
+    while (targetCategory?.parent?._id) {
+      const parentCategory = categories?.find(
+        (cat) => cat?._id === targetCategory?.parent?._id
+      );
+      featurestoFill.push(...parentCategory?.features);
+      targetCategory = parentCategory;
+    }
+  }
+
+  const addProductFeature = (nam, val) => {
+    setFeatures((prev) => {
+      const oldFeatures = { ...prev };
+      oldFeatures[nam] = val;
+      return oldFeatures;
+    });
+  };
+
+  useEffect(() => {
+    setFeatures(formData.features);
+  }, [formData]);
+
   return (
     <Layout>
       <div className=" flex flex-col items-center">
-        <h4 className="m-8 text-[#164e63] font-medium text-[1.4rem]">
-          Edit Procuct
-        </h4>
+        <div className="flex justify-between items-center w-[90%]">
+          <Link href="/products">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              className="w-6 h-6 cursor-pointer"
+            >
+              <path
+                strokeLinecap="round"
+                stroke-linejoin="round"
+                d="M15.75 19.5 8.25 12l7.5-7.5"
+              />
+            </svg>
+          </Link>
+
+          <h4 className="m-8 text-[#164e63] font-medium text-[1.4rem]">
+            Edit Procuct
+          </h4>
+          <div></div>
+        </div>
+
         <form className="w-[70%]" onSubmit={editProduct}>
           <label className="mb-2">Product Name</label>
           <input
@@ -164,6 +214,28 @@ function Editproduct() {
               );
             })}
           </select>
+          <label className="mb-[2rem]">Product Features</label>
+          {featurestoFill?.map((feat, index) => (
+            <div key={index} className="flex gap-2 items-start mt-1 mb-1">
+              <div className="border p-[0.4rem] rounded w-fit  mt-2 bg-[#164e63] text-white text-[0.85rem]">
+                {feat?.name}
+              </div>
+              <select
+                className="flex-1 cursor-pointer"
+                value={features[feat?.name]}
+                onChange={(e) => addProductFeature(feat?.name, e.target.value)}
+              >
+                {!features[feat?.name] && (
+                  <option value="Null">Select Feature</option>
+                )}
+                {feat?.values?.map((val, i) => (
+                  <option key={i} value={val}>
+                    {val}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
           <label className="mb-2">Product Description</label>
           <textarea
             type="text"
@@ -208,10 +280,10 @@ function Editproduct() {
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  class="w-6 h-6"
+                  className="w-6 h-6"
                 >
                   <path
-                    stroke-linecap="round"
+                    strokeLinecap="round"
                     stroke-linejoin="round"
                     d="M12 4.5v15m7.5-7.5h-15"
                   />

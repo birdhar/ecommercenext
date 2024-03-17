@@ -1,3 +1,4 @@
+import { adminEmails } from "@/utils/constant";
 import {
   S3Client,
   ListBucketsCommand,
@@ -11,7 +12,11 @@ async function handlePostFormReq(req, res) {
   const form = formidable({ multiple: true });
   const session = await getSession({ req });
 
-  if (!session || session.user.role !== "Admin") {
+  if (
+    !session ||
+    session.user.role !== "Admin" ||
+    !adminEmails?.includes(session?.user?.email)
+  ) {
     return res.status(401).json({ error: "You are not authorized" });
   }
 

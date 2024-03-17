@@ -3,12 +3,17 @@ import { Category } from "@/models/Category";
 import { checkAdmin } from "./auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { authproviders } from "./auth/[...nextauth]";
+import { adminEmails } from "@/utils/constant";
 
 export default async function handle(req, res) {
   const { method } = req;
   const session = await getServerSession(req, res, authproviders);
 
-  if (!session || session.user.role !== "Admin") {
+  if (
+    !session ||
+    session.user.role !== "Admin" ||
+    !adminEmails?.includes(session?.user?.email)
+  ) {
     return res.status(401).json({ error: "You are not authorized" });
   }
 
