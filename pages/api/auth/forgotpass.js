@@ -1,5 +1,5 @@
 import { mongooseConnect } from "@/lib/mongoose";
-import { User } from "@/models/user";
+import { User } from "@/models/User";
 import cryptoRandomString from "crypto-random-string";
 import Cryptr from "cryptr";
 import { render } from "@react-email/render";
