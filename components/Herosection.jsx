@@ -4,6 +4,7 @@ import "react-multi-carousel/lib/styles.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
+import Link from "next/link";
 
 function HeroSection() {
   const responsive = {
@@ -63,7 +64,9 @@ function HeroSection() {
             >
               <h2 className={style.herotext}>{item?.text1}</h2>
               <h2 className={style.herotext}>{item?.text2}</h2>
-              <button className={style.orderbtn}>Order Now</button>
+              <Link href={"/products"} className={style.orderbtn}>
+                Order Now
+              </Link>
             </div>
 
             <div

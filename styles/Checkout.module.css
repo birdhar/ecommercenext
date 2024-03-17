@@ -162,3 +162,114 @@
   height: 90vh;
   background-color: #f9f3f3;
 }
+.orderresponse {
+  padding: 2rem 4rem;
+  background-color: #eff0f1;
+  min-height: 90vh;
+}
+.ordermsgflex {
+  background-color: #fff;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.orderimgflex {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.orderimgflex img {
+  height: 5rem;
+}
+.orderimgflex h5 {
+  color: #415161;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+.orderimgflex h6 {
+  font-size: 1rem;
+}
+.gotorderbtn {
+  background-color: rgb(245, 95, 120);
+  padding: 0.5rem 0.75rem;
+  color: #fff;
+  border-radius: 0.3rem;
+  font-size: 0.85rem;
+}
+.addressflex {
+  display: flex;
+  justify-content: space-between;
+}
+.addressdiv h6 {
+  font-size: 1.1rem;
+  color: #696c6f;
+}
+.addressdiv p {
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  width: 13rem;
+}
+.orderdataflex {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 0.1px solid rgb(240, 235, 235);
+  padding: 2rem;
+}
+.orderdataflex img {
+  height: 4rem;
+}
+.producttext {
+  font-size: 0.9rem;
+}
+.orderdata {
+  background-color: #fff;
+  padding: 1rem;
+}
+.tabs {
+  width: 100%;
+  padding: 1.5rem 4rem;
+  display: flex;
+}
+.tab {
+  width: 100%;
+  border: 0.1px solid #f0f0f0;
+  color: #415161;
+  font-size: 0.85rem;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+.tabActive {
+  background-color: #f16868;
+  color: #fff;
+}
+@media only screen and (max-width: 768px) {
+  .checkoutflex {
+    flex-direction: column-reverse;
+  }
+  .pricedetails {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 540px) {
+  .checkoutflex,
+  .tabs {
+    padding: 1rem;
+  }
+  .checkoutstepflex,
+  .productDetails {
+    flex-direction: column;
+  }
+  .checkoutstepflex input,
+  .checkoutinput,
+  .productDetailsimgcontainer {
+    width: 100%;
+  }
+  .deliveryheading {
+    font-size: 0.9rem;
+  }
+}

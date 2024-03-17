@@ -154,6 +154,8 @@
 }
 .shopbtn {
   width: 100%;
+  display: grid;
+  place-items: center;
   background-image: linear-gradient(
     to right,
     #6c85ae 0%,

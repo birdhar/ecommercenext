@@ -3,15 +3,17 @@ import React, { useEffect, useState } from "react";
 import Drawer from "./Drawer";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { useSelector } from "react-redux";
-// 475d71 df6767
+import { useDispatch, useSelector } from "react-redux";
+import { getCartTotal } from "@/redux/cartSlice";
 function Header() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredItems, setFilteredItems] = useState([]);
   const [categories, setCategories] = useState([]);
-  const { totalQuantity } = useSelector((store) => store.cart);
+  const { totalQuantity, items } = useSelector((store) => store.cart);
+
   const [notificationState, setNotificationState] = useState({
     msg: "",
     run: false,
@@ -48,6 +50,10 @@ function Header() {
   const handleClickRoute = (url) => {
     router.push(url);
   };
+
+  useEffect(() => {
+    dispatch(getCartTotal());
+  }, [items]);
 
   return (
     <>
@@ -87,18 +93,17 @@ function Header() {
                 ALL PRODUCTS
               </Link>
             </li>
+
             <li className="">
               <Link
-                href="/"
-                className={"text-[#415161] text-[0.9rem] font-normal"}
-              >
-                CATEGORIES
-              </Link>
-            </li>
-            <li className="">
-              <Link
-                href="/"
-                className={"text-[#415161] text-[0.9rem] font-normal"}
+                href="/account/profile"
+                className={
+                  router?.pathname?.split("/")?.[1] === "account"
+                    ? "text-[#415161] text-[0.9rem] font-normal" +
+                      " " +
+                      "text-[#f2295b]"
+                    : "text-[#415161] text-[0.9rem] font-normal"
+                }
               >
                 ACCOUNT
               </Link>
@@ -109,24 +114,21 @@ function Header() {
             <div className="w-full absolute">
               <input
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setFilteredItems([]);
+                  setSearchQuery(e.target.value);
+                }}
                 className="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-[0.8rem] font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
                 id="exampleSearch"
                 placeholder="Search..."
               />
             </div>
             {searchQuery !== "" && (
-              <ul className="absolute z-10 border top-[2rem] w-full">
+              <ul className="absolute z-10 border top-[2rem] w-full max-h-[70vh] overflow-y-scroll">
                 {filteredItems?.map((cat) => (
-                  // <Link href={`category/${cat?.name}`} key={cat?._id}>
-                  //   <li className="border-b p-2 text-neutral-700 text-[0.8rem]">
-                  //     {cat?.name}
-                  //   </li>
-                  // </Link>
-
                   <li
                     key={cat?._id}
-                    className="border-b p-2 text-neutral-700 cursor-pointer text-[0.8rem]"
+                    className="border-b p-2 text-neutral-700 cursor-pointer text-[0.8rem] bg-white"
                     onClick={() => handleClickRoute(`/category/${cat?.name}`)}
                   >
                     {cat?.name}
@@ -167,7 +169,7 @@ function Header() {
             onClick={() => setOpenDrawer(true)}
           >
             <path
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
               clipRule="evenodd"
             />

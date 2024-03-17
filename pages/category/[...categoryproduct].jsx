@@ -10,8 +10,8 @@ import Link from "next/link";
 function Categoryproduct() {
   const router = useRouter();
 
-  // const { ref, inView } = useInView();
   const cat = router?.query?.categoryproduct?.[0];
+  const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
@@ -65,6 +65,7 @@ function Categoryproduct() {
     let targetCategory = categories?.find(
       (c) => c?.name?.toLowerCase() === cat?.toLowerCase()
     );
+
     const filteredProducts = products?.filter((p) => {
       return p?.category === targetCategory?._id;
     });
@@ -75,6 +76,7 @@ function Categoryproduct() {
       let arr1 = categories?.filter(
         (c) => c?.parent?._id === targetCategory?._id
       );
+
       targetCategoryArr = arr1;
       while (arr1?.length > 0) {
         let arr2 = [];
@@ -101,6 +103,12 @@ function Categoryproduct() {
       });
     }
   }, [categories, products, router]);
+
+  useEffect(() => {
+    if (filteredItems?.length > 0 && loading) {
+      setLoading(false);
+    }
+  }, [filteredItems, loading]);
 
   return (
     <Layout>
@@ -155,7 +163,7 @@ function Categoryproduct() {
                               className={style.star}
                             >
                               <path
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                                 d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
                                 clipRule="evenodd"
                               />
@@ -186,6 +194,12 @@ function Categoryproduct() {
             </Link>
           ))}
         </div>
+
+        {!loading && filteredItems?.length === 0 && (
+          <div className={style.noproduct}>
+            <img src="/images/noproduct.png" alt="products" />
+          </div>
+        )}
       </div>
       {notificationState.run && (
         <Notfication

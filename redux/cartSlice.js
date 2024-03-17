@@ -1,4 +1,8 @@
+"use client";
+
 import { createSlice } from "@reduxjs/toolkit";
+
+let cart = {};
 
 const cartSlice = createSlice({
   name: "cart",
@@ -12,9 +16,16 @@ const cartSlice = createSlice({
       state.items = [];
       state.totalQuantity = 0;
       state.totalAmount = 0;
+      localStorage.setItem("store", JSON.stringify({ cart: state }));
+    },
+    initializeCart: (state, action) => {
+      state.items = action.payload?.items;
+      state.totalQuantity = action.payload?.totalQuantity;
+      state.totalAmount = action.payload?.totalAmount;
     },
     addProductToCart: (state, action) => {
       state.items.push(action.payload);
+      localStorage.setItem("store", JSON.stringify({ cart: state }));
     },
     increaseCartProduct: (state, action) => {
       const updatedCartItems = state.items.map((item) => {
@@ -23,6 +34,10 @@ const cartSlice = createSlice({
         }
         return item;
       });
+      localStorage.setItem(
+        "store",
+        JSON.stringify({ cart: { ...state, items: updatedCartItems } })
+      );
       return { ...state, items: updatedCartItems };
     },
     decreaseCartProduct: (state, action) => {
@@ -32,12 +47,20 @@ const cartSlice = createSlice({
         }
         return item;
       });
+      localStorage.setItem(
+        "store",
+        JSON.stringify({ cart: { ...state, items: updatedCartItems } })
+      );
       return { ...state, items: updatedCartItems };
     },
     removeCartProduct: (state, action) => {
       const updatedCartItems = state.items.filter((item) => {
         return item?.info?._id !== action.payload?.info?._id;
       });
+      localStorage.setItem(
+        "store",
+        JSON.stringify({ cart: { ...state, items: updatedCartItems } })
+      );
       return { ...state, items: updatedCartItems };
     },
     getCartTotal: (state, action) => {
@@ -60,6 +83,7 @@ const cartSlice = createSlice({
 
 export const {
   clearCart,
+  initializeCart,
   addProductToCart,
   increaseCartProduct,
   decreaseCartProduct,

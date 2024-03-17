@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Notfication } from "@/validation/Snackbar";
 
@@ -51,6 +51,8 @@ function Login() {
       sessionStorage.setItem("redirectUrl", next);
     }
   }, [next]);
+
+  useEffect(() => {}, []);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -130,7 +132,7 @@ function Login() {
                 className="w-full text-black bg-white border flex gap-2 justify-center items-center hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
                 <img src="/images/google-icon.png" className="h-6 w-6" alt="" />
-                {loading ? "Signing in.." : "Sign in"}
+                {loading ? "Signing in.." : "Sign in with Google"}
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Don’t have an account yet?{" "}
@@ -158,6 +160,24 @@ function Login() {
       )}
     </section>
   );
+}
+
+export async function getServerSideProps({ req }) {
+  const session = await getSession({ req });
+
+  if (session) {
+    return {
+      redirect: {
+        destination: `/`,
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+      session,
+    },
+  };
 }
 
 export default Login;

@@ -3,6 +3,7 @@ import style from "../styles/Categories.module.css";
 import Image from "next/image";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import Link from "next/link";
 
 function AdSellFeature() {
   useEffect(() => {
@@ -31,9 +32,9 @@ function AdSellFeature() {
           </div>
 
           <div className={style.shopbtncontainer} data-aos="fade-up">
-            <button type="button" className={style.shopbtn}>
+            <Link type="button" className={style.shopbtn} href={"/products"}>
               Start Shopping
-            </button>
+            </Link>
           </div>
         </div>
         <div className={style.adselright}>
@@ -41,6 +42,8 @@ function AdSellFeature() {
             src="/images/shopping.png"
             alt="ecommerce-shopping"
             data-aos="zoom-in"
+            data-aos-easing="ease-in-sine"
+            data-aos-duration="1000"
           />
         </div>
       </div>

@@ -17,13 +17,28 @@ export default async function handler(req, res) {
   const { userAddress, productInfos } = req.body;
 
   let productInfoArr = [];
+  let line_items = [];
 
   for (const productInfo of productInfos) {
     productInfoArr.push({
       quantity: productInfo?.count,
       price_data: {
         currency: "inr",
-        product_data: { name: productInfo?.name },
+        product_data: {
+          name: productInfo?.name,
+          image: productInfo?.image,
+          description: productInfo?.description,
+        },
+        unit_amount: productInfo?.count * productInfo?.price,
+      },
+    });
+    line_items.push({
+      quantity: productInfo?.count,
+      price_data: {
+        currency: "inr",
+        product_data: {
+          name: productInfo?.name,
+        },
         unit_amount: productInfo?.count * productInfo?.price * 100,
       },
     });
@@ -38,6 +53,8 @@ export default async function handler(req, res) {
     streetAddress: userAddress?.address,
     product_info: productInfoArr,
     userId: user?._id,
+    payment: "Pending",
+    delivery: "Dispatched",
   });
 
   const sessionn = await stripe.checkout.sessions.create({
@@ -63,15 +80,17 @@ export default async function handler(req, res) {
         },
       },
     ],
-    line_items: productInfoArr,
+    line_items: line_items,
     mode: "payment",
     customer_email: session?.user?.email,
     success_url:
       process.env.NEXTAUTH_URL +
-      `/checkout?success=1&orderId=${orderDoc?._id?.toString()}`,
-    cancel_url: process.env.NEXTAUTH_URL + "/checkout?fail=1",
+      `/orderresponse?success=1&orderId=${orderDoc?._id?.toString()}`,
+    cancel_url: process.env.NEXTAUTH_URL + "/orderresponse?fail=1",
     metadata: { orderId: orderDoc?._id?.toString() },
   });
 
   res.json({ url: sessionn.url });
+
+  // res.json(productInfoArr);
 }

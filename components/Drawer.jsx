@@ -46,6 +46,8 @@ export default function Sidebar({ open, onClose }) {
 
   const handleSignOut = () => {
     signOut();
+    localStorage.clear();
+    router.push("/login?next=/");
   };
 
   const list = (anchor) => (
@@ -94,23 +96,37 @@ export default function Sidebar({ open, onClose }) {
             <li className={style.listitem}>
               <Link
                 href="/"
-                className={`${style.listitemanchor} ${style.listitemanchorActive}`}
+                className={
+                  router.pathname === "/"
+                    ? `${style.listitemanchor} ${style.listitemanchorActive}`
+                    : style.listitemanchor
+                }
               >
                 HOME
               </Link>
             </li>
             <li className={style.listitem}>
-              <Link href="/" className={`${style.listitemanchor}`}>
+              <Link
+                href="/products"
+                className={
+                  router.pathname === "/products"
+                    ? `${style.listitemanchor} ${style.listitemanchorActive}`
+                    : style.listitemanchor
+                }
+              >
                 ALL PRODUCTS
               </Link>
             </li>
+
             <li className={style.listitem}>
-              <Link href="/" className={`${style.listitemanchor}`}>
-                CATEGORIES
-              </Link>
-            </li>
-            <li className={style.listitem}>
-              <Link href="/" className={`${style.listitemanchor}`}>
+              <Link
+                href="/account/profile"
+                className={
+                  router?.pathname?.split("/")?.[1] === "account"
+                    ? `${style.listitemanchor} ${style.listitemanchorActive}`
+                    : style.listitemanchor
+                }
+              >
                 ACCOUNT
               </Link>
             </li>

@@ -1,6 +1,32 @@
 .productscontainer {
   width: 100%;
 }
+.noproduct {
+  width: 100%;
+  height: 70vh;
+  display: grid;
+  place-items: center;
+}
+.noproduct img {
+  height: 10rem;
+}
+.shimmercontainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5rem;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+.shimmer {
+  width: 17rem;
+  padding: 1rem;
+}
+.shimmerflex {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5rem 0;
+}
 .herosection {
   background-color: rgb(252, 239, 241);
   width: 100%;
@@ -53,6 +79,7 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 3rem;
+  padding-bottom: 2rem;
 }
 
 .product {
@@ -317,4 +344,62 @@
 }
 .deliverybtnActive {
   color: #f27d7d;
+}
+@media only screen and (max-width: 844px) {
+  .herosectiontexth3 {
+    font-size: 2.8rem;
+    font-weight: 700;
+  }
+  .herosectionimg img {
+    height: 15rem;
+  }
+  .productDetails {
+    flex-direction: column;
+  }
+  .productDetailsimgcontainer,
+  .productDetailstextcontainer {
+    width: 100%;
+  }
+}
+@media only screen and (max-width: 680px) {
+  .herosectiontexth3 {
+    font-size: 2rem;
+  }
+  .orderbtn {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+@media only screen and (max-width: 540px) {
+  .herosectiontexth3 {
+    font-size: 1.5rem;
+  }
+  .herosectionimg img {
+    height: 10rem;
+  }
+  .productDetailsimgcontainer {
+    height: 20rem;
+  }
+}
+@media only screen and (max-width: 480px) {
+  .herosection {
+    flex-direction: column;
+  }
+  .herosectiontext,
+  .herosectionimg {
+    width: 100%;
+  }
+  .herosectiontexth3 {
+    text-align: center;
+  }
+  .herosectiontext div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .productDetailscontainer,
+  .productDetailstextcontainer {
+    padding: 1rem;
+  }
 }

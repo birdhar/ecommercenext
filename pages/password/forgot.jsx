@@ -5,6 +5,7 @@ import React, { useState } from "react";
 function ResetPassword() {
   const [email, setEmail] = useState();
   const [loading, setLoging] = useState(false);
+  const [mailSent, setMailSent] = useState(false);
   const [notificationState, setNotificationState] = useState({
     msg: "",
     run: false,
@@ -22,6 +23,7 @@ function ResetPassword() {
             run: true,
             status: "success",
           });
+          setMailSent(true);
         }
 
         setLoging(false);
@@ -36,6 +38,31 @@ function ResetPassword() {
         setLoging(false);
       });
   };
+
+  if (mailSent) {
+    return (
+      <section className="bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center h-[80vh]">
+        <div className="border shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col items-center justify-center p-4">
+          <img src="/images/emaill.png" alt="recovery email" />
+          <h6 className="text-[1rem] text-[#415161] mt-4">
+            Verify your email address
+          </h6>
+          <p className="text-[0.9rem] text-[#353c42] mt-2">
+            {" "}
+            Please click on the link in the email we just sent
+          </p>
+
+          <button
+            className="border text-[#353c42] p-2 text-[0.75rem] mt-2 rounded bg-[#f6f4f4]"
+            type="button"
+            onClick={handleSubmit}
+          >
+            Resend Email
+          </button>
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -80,7 +107,7 @@ function ResetPassword() {
               disabled={loading ? true : false}
               className="w-full text-white bg-blue-500 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             >
-              {loading ? "Processing" : "Send"}
+              {loading ? "Processing..." : "Send"}
             </button>
           </form>
         </div>

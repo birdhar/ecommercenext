@@ -1,7 +1,9 @@
 import { Notfication } from "@/validation/Snackbar";
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
+import dynamic from "next/dynamic";
 
 function ResetPassword() {
   const router = useRouter();
@@ -26,6 +28,7 @@ function ResetPassword() {
         run: true,
         status: "error",
       });
+      setLoading(false);
       return false;
     } else if (pass.confirmPass.length < 8 || pass.newPass.length < 8) {
       setNotificationState({
@@ -33,13 +36,16 @@ function ResetPassword() {
         run: true,
         status: "error",
       });
+
+      setLoading(false);
       return false;
     } else if (pass.newPass !== pass.confirmPass) {
       setNotificationState({
-        msg: "Passwords do not match",
+        msg: "Passwords did not match",
         run: true,
         status: "error",
       });
+      setLoading(false);
       return false;
     } else {
       return true;
@@ -80,11 +86,20 @@ function ResetPassword() {
         });
     }
   };
-  if (!router.query.signature) {
-    // If the 'token' URL parameter is not present, redirect the user to the forgot password page
-    router.push("/password/forgot");
-    return null; // Render nothing while redirecting
-  }
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      if (!router.query?.signature) {
+        setNotificationState({
+          msg: "Something went wrong! Please try again",
+          run: true,
+          status: "error",
+        });
+        router.push("/password/forgot");
+      }
+    }, 1000);
+    return () => clearTimeout(delay);
+  }, [router.query]);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -169,4 +184,6 @@ function ResetPassword() {
   );
 }
 
-export default ResetPassword;
+export default dynamic(() => Promise.resolve(ResetPassword), { ssr: false });
+
+// ResetPassword;

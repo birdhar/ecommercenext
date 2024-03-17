@@ -9,7 +9,8 @@ const OrderSchema = new Schema(
     phone: { type: String },
     streetAddress: { type: String },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    payment_info: { type: Object },
+    payment: { type: String },
+    delivery: { type: String },
   },
   {
     timestamps: true,
