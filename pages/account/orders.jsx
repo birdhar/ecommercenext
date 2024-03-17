@@ -48,30 +48,17 @@ function Orders() {
               <h6 className={style.profileh6}>Your Orders</h6>
             </div>
             <div className={style.skeletonContainer}>
-              <Skeleton
-                variant="rectangular"
-                style={{
-                  width: "100%",
-                  height: "4rem",
-                  marginBottom: "0.5rem",
-                }}
-              />
-              <Skeleton
-                variant="rectangular"
-                style={{
-                  width: "100%",
-                  height: "4rem",
-                  marginBottom: "0.5rem",
-                }}
-              />
-              <Skeleton
-                variant="rectangular"
-                style={{
-                  width: "100%",
-                  height: "4rem",
-                  marginBottom: "0.5rem",
-                }}
-              />
+              {[...Array(10)]?.map((item, index) => (
+                <Skeleton
+                  key={index}
+                  variant="rectangular"
+                  style={{
+                    width: "100%",
+                    height: "4rem",
+                    marginBottom: "0.5rem",
+                  }}
+                />
+              ))}
             </div>
           </div>
         </ProfileLayout>
@@ -116,7 +103,15 @@ function Orders() {
                         <IndianRupeeFormatter
                           amount={product?.price_data?.unit_amount}
                         />
-                        <span className={style.producttextspan}>
+                        <span
+                          className={
+                            order?.payment === "Failed"
+                              ? `${style.producttextspan} ${style.failed}`
+                              : order?.payment === "Pending"
+                              ? `${style.producttextspan} ${style.pending}`
+                              : style.producttextspan
+                          }
+                        >
                           {order?.payment}
                         </span>
                       </p>

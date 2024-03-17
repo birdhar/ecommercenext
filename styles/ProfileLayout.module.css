@@ -8,7 +8,7 @@
 }
 .sidebar {
   width: 20rem;
-  min-height: 95%;
+  height: 80vh;
   display: flex;
   flex-direction: column;
 }
@@ -50,6 +50,8 @@
   background-color: #fff;
   flex: 1;
   padding: 1.5rem;
+  height: 80vh;
+  overflow-y: scroll;
 }
 .profileh6 {
   font-size: 1.1rem;
@@ -88,6 +90,7 @@
 }
 .producttext {
   font-size: 0.85rem;
+  text-align: center;
 }
 .orderdata {
   background-color: #fff;
@@ -100,6 +103,14 @@
   background-color: rgb(152, 234, 234);
   color: rgb(58, 82, 58);
   margin-left: 0.3rem;
+}
+.failed {
+  background-color: rgb(234, 162, 152);
+  color: rgb(105, 67, 59);
+}
+.pending {
+  background-color: rgb(238, 240, 240);
+  color: rgb(62, 62, 62);
 }
 .checkoutbtnflex {
   width: 100%;
@@ -142,8 +153,12 @@
   color: rgb(239, 243, 246);
   font-size: 0.8rem;
 }
-
-@media only screen and (max-width: 680px) {
+.producttextflex {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+@media only screen and (max-width: 840px) {
   .profilelayout {
     flex-direction: column;
   }
@@ -173,6 +188,7 @@
     margin-top: 1rem;
     width: 100%;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     margin-bottom: 2rem;
   }

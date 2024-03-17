@@ -1,5 +1,6 @@
 import { Notfication } from "@/validation/Snackbar";
 import axios from "axios";
+import Head from "next/head";
 import React, { useState } from "react";
 
 function ResetPassword() {
@@ -41,26 +42,42 @@ function ResetPassword() {
 
   if (mailSent) {
     return (
-      <section className="bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center h-[80vh]">
-        <div className="border shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col items-center justify-center p-4">
-          <img src="/images/emaill.png" alt="recovery email" />
-          <h6 className="text-[1rem] text-[#415161] mt-4">
-            Verify your email address
-          </h6>
-          <p className="text-[0.9rem] text-[#353c42] mt-2">
-            {" "}
-            Please click on the link in the email we just sent
-          </p>
+      <>
+        <Head>
+          <title>
+            <title>
+              Shop the Latest Trends in Fashion, Electronics, Appliances and...
+              | EMart
+            </title>
+          </title>
+          <meta
+            name="description"
+            content="Discover the latest fashion trends and shop a wide selection of clothing, accessories, and footwear at EMart."
+          />
+          <link rel="canonical" href="/password/forgot" />
+        </Head>
 
-          <button
-            className="border text-[#353c42] p-2 text-[0.75rem] mt-2 rounded bg-[#f6f4f4]"
-            type="button"
-            onClick={handleSubmit}
-          >
-            Resend Email
-          </button>
-        </div>
-      </section>
+        <section className="bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center h-[80vh]">
+          <div className="border shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col items-center justify-center p-4">
+            <img src="/images/emaill.png" alt="recovery email" />
+            <h6 className="text-[1rem] text-[#415161] mt-4">
+              Verify your email address
+            </h6>
+            <p className="text-[0.9rem] text-[#353c42] mt-2">
+              {" "}
+              Please click on the link in the email we just sent
+            </p>
+
+            <button
+              className="border text-[#353c42] p-2 text-[0.75rem] mt-2 rounded bg-[#f6f4f4]"
+              type="button"
+              onClick={handleSubmit}
+            >
+              Resend Email
+            </button>
+          </div>
+        </section>
+      </>
     );
   }
   return (

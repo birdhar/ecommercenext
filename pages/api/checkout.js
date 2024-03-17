@@ -86,7 +86,9 @@ export default async function handler(req, res) {
     success_url:
       process.env.NEXTAUTH_URL +
       `/orderresponse?success=1&orderId=${orderDoc?._id?.toString()}`,
-    cancel_url: process.env.NEXTAUTH_URL + "/orderresponse?fail=1",
+    cancel_url:
+      process.env.NEXTAUTH_URL +
+      `/orderresponse?fail=1&orderId=${orderDoc?._id?.toString()}`,
     metadata: { orderId: orderDoc?._id?.toString() },
   });
 

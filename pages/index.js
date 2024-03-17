@@ -1,4 +1,3 @@
-"use client";
 import Layout from "@/components/Layout";
 import { getSession, useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -13,7 +12,10 @@ function Home(params) {
   return (
     <>
       <Head>
-        <title>Shop the Latest Trends in Fashion | EMart</title>
+        <title>
+          Shop the Latest Trends in Fashion, Electronics, Appliances and... |
+          EMart
+        </title>
         <meta
           name="description"
           content="Discover the latest fashion trends and shop a wide selection of clothing, accessories, and footwear at EMart."

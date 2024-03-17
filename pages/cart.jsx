@@ -21,9 +21,7 @@ function Cart() {
   const router = useRouter();
   const dispatch = useDispatch();
   const { items, totalQuantity, totalAmount } = useCartItems();
-  // const { items, totalQuantity, totalAmount } = useSelector(
-  //   (store) => store.cart
-  // );
+  const [loading, setLoading] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
   const id = router?.query?.pid;
   const [index, setIndex] = useState(1);
@@ -74,14 +72,22 @@ function Cart() {
   useEffect(() => {
     dispatch(getCartTotal());
   }, [items]);
-  const saveAddress = async () => {
+
+  const validateAddress = () => {
     if (
-      userAddress?.name === "" ||
-      userAddress?.phone === "" ||
-      userAddress?.address === "" ||
-      userAddress?.locality === "" ||
-      userAddress?.pincode === ""
+      userAddress?.name !== "" &&
+      userAddress?.locality !== "" &&
+      userAddress?.address !== "" &&
+      userAddress?.phone?.length === 10 &&
+      userAddress?.pincode?.length === 6
     ) {
+      return true;
+    }
+    return false;
+  };
+  const addressValid = validateAddress();
+  const saveAddress = async () => {
+    if (addressValid) {
       setNotificationState({
         msg: "Please fill all the address field",
         run: true,
@@ -112,6 +118,7 @@ function Cart() {
   };
 
   const handleCheckout = async () => {
+    setLoading(true);
     const productInfos = items.map((product) => {
       const prod = {
         _id: product?.info?._id,
@@ -130,8 +137,15 @@ function Cart() {
     });
 
     if (res.data.url) {
-      // window.open(res.data.url);
+      setLoading(false);
       window.location = res.data.url;
+    } else {
+      setLoading(false);
+      setNotificationState({
+        msg: "Something went wrong!",
+        run: true,
+        status: "error",
+      });
     }
   };
 
@@ -272,9 +286,11 @@ function Cart() {
                         }
                       />
                       <div className={style.checkoutbtnflex}>
-                        <button type="button" onClick={saveAddress}>
-                          Save and deliver here
-                        </button>
+                        {addressValid && (
+                          <button type="button" onClick={saveAddress}>
+                            Save and deliver here
+                          </button>
+                        )}
                       </div>
                     </div>
                   )}
@@ -302,7 +318,7 @@ function Cart() {
                         <h6 className={style.deliveryheading}>ORDER SUMMERY</h6>
                       </div>
                     </div>
-                    {index !== 2 && (
+                    {index !== 2 && addressValid && (
                       <button type="button" onClick={() => setIndex(2)}>
                         Change
                       </button>
@@ -502,8 +518,12 @@ function Cart() {
                   {index === 3 && (
                     <div className={style.checkoutstepbody}>
                       <div className={style.checkoutbtnflex}>
-                        <button type="button" onClick={handleCheckout}>
-                          Proceed to Payment
+                        <button
+                          disabled={loading ? true : false}
+                          type="button"
+                          onClick={handleCheckout}
+                        >
+                          {loading ? "Please wait..." : "Proceed to Payment"}
                         </button>
                       </div>
                     </div>
