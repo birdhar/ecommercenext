@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { getSession, signIn } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Notfication } from "@/validation/Snackbar";
 import Head from "next/head";
@@ -8,6 +8,7 @@ import Head from "next/head";
 function Login() {
   const router = useRouter();
   const { next } = router.query;
+  const { data: session, status } = useSession();
   const [notificationState, setNotificationState] = useState({
     msg: "",
     run: false,
@@ -28,9 +29,14 @@ function Login() {
       redirect: false,
       callbackUrl: "/",
     });
-
     if (res.ok) {
-      router.push(next || "/");
+      const redirectTo = router?.asPath?.split("=")?.[1];
+      if (redirectTo) {
+        router.push(redirectTo);
+      } else {
+        router.push("/");
+      }
+
       setLoading(false);
     } else {
       setNotificationState({
@@ -43,17 +49,28 @@ function Login() {
   };
 
   const handleGoogleSignIn = async () => {
-    await signIn("google", { callbackUrl: "/" });
-  };
-  useEffect(() => {
-    if (next) {
-      // If 'next' query parameter exists, save it in session/local storage or use another method to persist it
-      // For simplicity, let's assume we save it in session storage
-      sessionStorage.setItem("redirectUrl", next);
+    const redirectTo = router?.asPath?.split("=")?.[1];
+    if (redirectTo) {
+      await signIn("google", { callbackUrl: redirectTo });
+    } else {
+      await signIn("google", { callbackUrl: "/" });
     }
-  }, [next]);
+  };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (status === "loading") {
+      return;
+    }
+
+    if (session) {
+      const redirectTo = router?.asPath?.split("=")?.[1];
+      if (redirectTo) {
+        router.push(redirectTo);
+      } else {
+        router.push("/");
+      }
+    }
+  }, [session, status, router]);
 
   return (
     <>
@@ -181,22 +198,22 @@ function Login() {
   );
 }
 
-export async function getServerSideProps({ req }) {
-  const session = await getSession({ req });
+// export async function getServerSideProps({ req }) {
+//   const session = await getSession({ req });
 
-  if (session) {
-    return {
-      redirect: {
-        destination: `/`,
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {
-      session,
-    },
-  };
-}
+//   if (session) {
+//     return {
+//       redirect: {
+//         destination: `/`,
+//         permanent: false,
+//       },
+//     };
+//   }
+//   return {
+//     props: {
+//       session,
+//     },
+//   };
+// }
 
 export default Login;

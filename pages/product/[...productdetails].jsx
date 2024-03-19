@@ -4,17 +4,18 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { IndianRupeeFormatter } from "@/utils/IndianRupeeFormatter";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { pincodes } from "@/constatns/constatnt";
 import { Notfication } from "@/validation/Snackbar";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { addProductToCart } from "@/redux/cartSlice";
 import Head from "next/head";
+import { CircularProgress } from "@mui/material";
 
 function ProductDetails() {
   const router = useRouter();
-
+  const { data: session, status } = useSession();
   const regex = /^[0-9]+$/;
   const dispatch = useDispatch();
   const { items } = useSelector((store) => store.cart);
@@ -59,6 +60,33 @@ function ProductDetails() {
       dispatch(addProductToCart({ info: product, count: 1 }));
     }
   };
+
+  useEffect(() => {
+    if (status === "loading") {
+      // Session is still loading, do nothing
+      return;
+    }
+
+    if (status === "unauthenticated" && !session) {
+      router.push(`/login?next=${router?.asPath}`);
+    }
+  }, [session, status, router]);
+
+  if (status === "loading" || (!session && status === "unauthenticated")) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          display: "grid",
+          placeItems: "center",
+          background: "#fff",
+        }}
+      >
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -292,24 +320,24 @@ function ProductDetails() {
   );
 }
 
-export async function getServerSideProps({ req }) {
-  const session = await getSession({ req });
+// export async function getServerSideProps({ req }) {
+//   const session = await getSession({ req });
 
-  const { url } = req;
+//   const { url } = req;
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/login?next=${url}`,
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {
-      session,
-    },
-  };
-}
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: `/login?next=${url}`,
+//         permanent: false,
+//       },
+//     };
+//   }
+//   return {
+//     props: {
+//       session,
+//     },
+//   };
+// }
 
 export default ProductDetails;

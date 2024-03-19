@@ -8,12 +8,14 @@ import Link from "next/link";
 import { IndianRupeeFormatter } from "@/utils/IndianRupeeFormatter";
 import { useDispatch } from "react-redux";
 import { clearCart } from "@/redux/cartSlice";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
+import { CircularProgress } from "@mui/material";
 
 function Checkout() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { data: session, status } = useSession();
   const [order, setOrder] = useState({});
   const [notificationState, setNotificationState] = useState({
     msg: "",
@@ -21,7 +23,6 @@ function Checkout() {
     status: "error",
   });
   useEffect(() => {
-    console.log(router?.query);
     if (!router?.query?.orderId) {
       return;
     }
@@ -57,6 +58,33 @@ function Checkout() {
       updateOrder("Failed");
     }
   }, [router?.query]);
+
+  useEffect(() => {
+    if (status === "loading") {
+      // Session is still loading, do nothing
+      return;
+    }
+
+    if (status === "unauthenticated" && !session) {
+      router.push(`/login?next=${router?.asPath}`);
+    }
+  }, [session, status, router]);
+
+  if (status === "loading" || (!session && status === "unauthenticated")) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          display: "grid",
+          placeItems: "center",
+          background: "#fff",
+        }}
+      >
+        <CircularProgress />
+      </div>
+    );
+  }
 
   if (router?.query?.fail === "1") {
     return (
@@ -177,22 +205,22 @@ function Checkout() {
   );
 }
 
-export async function getServerSideProps({ req }) {
-  const session = await getSession({ req });
+// export async function getServerSideProps({ req }) {
+//   const session = await getSession({ req });
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/login?next=${"/orderresponse"}`,
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {
-      session,
-    },
-  };
-}
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: `/login?next=${"/orderresponse"}`,
+//         permanent: false,
+//       },
+//     };
+//   }
+//   return {
+//     props: {
+//       session,
+//     },
+//   };
+// }
 
 export default Checkout;

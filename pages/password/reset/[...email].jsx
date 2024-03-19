@@ -201,5 +201,3 @@ function ResetPassword() {
 }
 
 export default dynamic(() => Promise.resolve(ResetPassword), { ssr: false });
-
-// ResetPassword;

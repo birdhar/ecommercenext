@@ -3,10 +3,14 @@ import React, { useEffect, useState } from "react";
 import style from "../../styles/ProfileLayout.module.css";
 import axios from "axios";
 import { Notfication } from "@/validation/Snackbar";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { CircularProgress } from "@mui/material";
 
 function Profile() {
+  const router = useRouter();
+  const { data: session, status } = useSession();
   const [userAddress, setUserAddress] = useState({
     name: "",
     phone: "",
@@ -71,6 +75,34 @@ function Profile() {
       });
     }
   };
+
+  useEffect(() => {
+    if (status === "loading") {
+      // Session is still loading, do nothing
+      return;
+    }
+
+    if (status === "unauthenticated" && !session) {
+      router.push(`/login?next=${router?.asPath}`);
+    }
+  }, [session, status, router]);
+
+  if (status === "loading" || (!session && status === "unauthenticated")) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          display: "grid",
+          placeItems: "center",
+          background: "#fff",
+        }}
+      >
+        <CircularProgress />
+      </div>
+    );
+  }
+
   return (
     <>
       <Head>
@@ -163,22 +195,22 @@ function Profile() {
   );
 }
 
-export async function getServerSideProps({ req }) {
-  const session = await getSession({ req });
+// export async function getServerSideProps({ req }) {
+//   const session = await getSession({ req });
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/login?next=${"/account/profile"}`,
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {
-      session,
-    },
-  };
-}
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: `/login?next=${"/account/profile"}`,
+//         permanent: false,
+//       },
+//     };
+//   }
+//   return {
+//     props: {
+//       session,
+//     },
+//   };
+// }
 
 export default Profile;

@@ -12,14 +12,16 @@ import {
   getCartTotal,
 } from "@/redux/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import useCartItems from "@/utils/useCartItems";
 import Head from "next/head";
+import { CircularProgress } from "@mui/material";
 
 function Cart() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { data: session, status } = useSession();
   const { items, totalQuantity, totalAmount } = useCartItems();
   const [loading, setLoading] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
@@ -148,6 +150,33 @@ function Cart() {
       });
     }
   };
+
+  useEffect(() => {
+    if (status === "loading") {
+      // Session is still loading, do nothing
+      return;
+    }
+
+    if (status === "unauthenticated" && !session) {
+      router.push(`/login?next=${router?.asPath}`);
+    }
+  }, [session, status, router]);
+
+  if (status === "loading" || (!session && status === "unauthenticated")) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          display: "grid",
+          placeItems: "center",
+          background: "#fff",
+        }}
+      >
+        <CircularProgress />
+      </div>
+    );
+  }
 
   if (items?.length <= 0) {
     return (
@@ -580,22 +609,22 @@ function Cart() {
   );
 }
 
-export async function getServerSideProps({ req }) {
-  const session = await getSession({ req });
+// export async function getServerSideProps({ req }) {
+//   const session = await getSession({ req });
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/login?next=${"/cart"}`,
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {
-      session,
-    },
-  };
-}
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: `/login?next=${"/cart"}`,
+//         permanent: false,
+//       },
+//     };
+//   }
+//   return {
+//     props: {
+//       session,
+//     },
+//   };
+// }
 
 export default dynamic(() => Promise.resolve(Cart), { ssr: false });

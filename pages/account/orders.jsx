@@ -4,10 +4,13 @@ import style from "../../styles/ProfileLayout.module.css";
 import axios from "axios";
 import { IndianRupeeFormatter } from "@/utils/IndianRupeeFormatter";
 import { CircularProgress, Skeleton } from "@mui/material";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 function Orders() {
+  const router = useRouter();
+  const { data: session, status } = useSession();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const getOrders = async () => {
@@ -29,6 +32,32 @@ function Orders() {
   useEffect(() => {
     getOrders();
   }, []);
+  useEffect(() => {
+    if (status === "loading") {
+      // Session is still loading, do nothing
+      return;
+    }
+
+    if (status === "unauthenticated" && !session) {
+      router.push(`/login?next=${router?.asPath}`);
+    }
+  }, [session, status, router]);
+
+  if (status === "loading" || (!session && status === "unauthenticated")) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          display: "grid",
+          placeItems: "center",
+          background: "#fff",
+        }}
+      >
+        <CircularProgress />
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -135,22 +164,22 @@ function Orders() {
   );
 }
 
-export async function getServerSideProps({ req }) {
-  const session = await getSession({ req });
+// export async function getServerSideProps({ req }) {
+//   const session = await getSession({ req });
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/login?next=${"/account/orders"}`,
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {
-      session,
-    },
-  };
-}
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: `/login?next=${"/account/orders"}`,
+//         permanent: false,
+//       },
+//     };
+//   }
+//   return {
+//     props: {
+//       session,
+//     },
+//   };
+// }
 
 export default Orders;

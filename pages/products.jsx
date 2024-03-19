@@ -7,11 +7,13 @@ import axios from "axios";
 import { useInView } from "react-intersection-observer";
 import { IndianRupeeFormatter } from "@/utils/IndianRupeeFormatter";
 import Link from "next/link";
-import { getSession } from "next-auth/react";
-import { Skeleton } from "@mui/material";
+import { getSession, useSession } from "next-auth/react";
+import { CircularProgress, Skeleton } from "@mui/material";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 function AllProducts() {
+  const router = useRouter();
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
@@ -44,6 +46,7 @@ function AllProducts() {
     },
   ];
   const { ref, inView } = useInView();
+  const { data: session, status } = useSession();
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -143,6 +146,35 @@ function AllProducts() {
   //     </Layout>
   //   );
   // }
+
+  useEffect(() => {
+    // Check if the session has been loaded
+    if (status === "loading") {
+      // Session is still loading, do nothing
+      return;
+    }
+
+    // Now the session is loaded, you can use it
+    if (status === "unauthenticated" && !session) {
+      router.push(`/login?next=${"/products"}`);
+    }
+  }, [session, status, router]);
+
+  if (status === "loading" || (!session && status === "unauthenticated")) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          display: "grid",
+          placeItems: "center",
+          background: "#fff",
+        }}
+      >
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -363,22 +395,22 @@ function AllProducts() {
   );
 }
 
-export async function getServerSideProps({ req }) {
-  const session = await getSession({ req });
+// export async function getServerSideProps({ req }) {
+//   const session = await getSession({ req });
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/login?next=${"/products"}`,
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {
-      session,
-    },
-  };
-}
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: `/login?next=${"/products"}`,
+//         permanent: false,
+//       },
+//     };
+//   }
+//   return {
+//     props: {
+//       session,
+//     },
+//   };
+// }
 
 export default AllProducts;
