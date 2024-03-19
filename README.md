@@ -1,40 +1,88 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# EMart Admin Overview
 
-First, run the development server:
+The admin panel of EMart is a comprehensive tool designed to streamline the management and administration of the platform. It offers a range of features tailored to empower administrators and optimize operational efficiency.
+
+## Key Features:
+
+**Dashboard:**  A centralized dashboard providing a quick overview of essential metrics such as products, order status, and user activity. Administrators can gain insights at a glance.
+
+
+**Product Management:** Effortlessly manage product catalog with tools for adding, editing, categorizing, and updating product listings. Administrators have full control over product attributes, pricing, and inventory management.
+
+
+**Order Management:**  Seamlessly process orders from initiation to fulfillment. Track order status, manage shipments, handle returns, and communicate with customers efficiently, ensuring a smooth order fulfillment process.
+
+**Category Management** It is a pivotal feature designed to organize and optimize the product catalog effectively. It offers administrators the tools needed to create, modify, and organize product categories, ensuring a seamless browsing experience for customers.
+
+
+
+
+
+
+
+
+## Tech Stack
+
+NextJs, React, TailwindCSS, Material UI, MongoDB, NextAuth
+
+
+## Demo
+
+https://ecommercadmin.vercel.app
+
+
+## Deployment
+
+To deploy this project run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+  npm run deploy
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Environment Variables
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+To run this project, you will need to add the following environment variables to your .env file
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+`MONGODB_URI`
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+`GOOGLE_ID`
 
-## Learn More
+`GOOGLE_SECRET`
 
-To learn more about Next.js, take a look at the following resources:
+`S3_ACCESS_KEY`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+`S3_SECRET_ACCESS_KEY`
 
-## Deploy on Vercel
+`NEXTAUTH_SECRET`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+
+
+## Screenshots
+
+![App Screenshot](https://ik.imagekit.io/birat22/Screenshot%20(1723).png)
+
+![App Screenshot](https://ik.imagekit.io/birat22/Screenshot%20(1724).png)
+
+
+![App Screenshot](https://ik.imagekit.io/birat22/Screenshot%20(1726).png)
+
+
+![App Screenshot](https://ik.imagekit.io/birat22/Screenshot%20(1727).png)
+
+
+
+
+
+
+## Conclusion: 
+
+The admin panel of EMart empowers administrators with the tools and insights needed to effectively manage and grow their eCommerce business. With its intuitive interface, comprehensive features, and focus on operational efficiency, it serves as a catalyst for success in the competitive online marketplace.
+
+
+
