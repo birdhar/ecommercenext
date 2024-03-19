@@ -1,6 +1,6 @@
 import IndianRupeeFormatter from "@/components/IndianRupeeFormatter";
 import Layout from "@/components/Layout";
-import { Notfication } from "@/pages/validation/Snackbar";
+import { Notfication } from "@/validation/Snackbar";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";

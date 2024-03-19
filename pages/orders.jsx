@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 import Link from "next/link";
 import TableBody from "@/components/TableBody";
 import { CircularProgress } from "@mui/material";
-import { Notfication } from "./validation/Snackbar";
+import { Notfication } from "@/validation/Snackbar";
 
 function Orders() {
   const [orders, setOrders] = useState([]);

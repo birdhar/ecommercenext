@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Loader from "@/components/Loader";
 import { TailSpin } from "react-loader-spinner";
-import { Notfication } from "./validation/Snackbar";
+import { Notfication } from "@/validation/Snackbar";
 import { CircularProgress } from "@mui/material";
 
 function Categories() {

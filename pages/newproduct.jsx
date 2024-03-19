@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ViewProduct from "@/components/ViewProduct";
 import Link from "next/link";
-import { Notfication } from "./validation/Snackbar";
+import { Notfication } from "@/validation/Snackbar";
 
 function Newproduct() {
   const router = useRouter();

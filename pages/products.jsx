@@ -8,7 +8,7 @@ import Error from "@/components/Error";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { Notfication } from "./validation/Snackbar";
+import { Notfication } from "@/validation/Snackbar";
 import { CircularProgress } from "@mui/material";
 
 function Products() {

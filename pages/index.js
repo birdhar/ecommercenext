@@ -3,7 +3,7 @@ import { CircularProgress, Menu } from "@mui/material";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { Notfication } from "./validation/Snackbar";
+import { Notfication } from "@/validation/Snackbar";
 import axios from "axios";
 
 function Home() {
