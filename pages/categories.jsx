@@ -2,7 +2,6 @@ import DeleteProduct from "@/components/DeleteProduct";
 import Layout from "@/components/Layout";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Loader from "@/components/Loader";
 import { TailSpin } from "react-loader-spinner";
@@ -11,7 +10,6 @@ import { CircularProgress } from "@mui/material";
 
 function Categories() {
   const router = useRouter();
-  const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredItems, setFilteredItems] = useState([]);

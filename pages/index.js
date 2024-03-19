@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import { CircularProgress, Menu } from "@mui/material";
-import { getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Notfication } from "./validation/Snackbar";

@@ -4,7 +4,6 @@ import Loader from "@/components/Loader";
 import TableBody from "@/components/TableBody";
 import ViewProduct from "@/components/ViewProduct";
 import axios from "axios";
-import { getSession, useSession } from "next-auth/react";
 import Error from "@/components/Error";
 import Link from "next/link";
 import { useRouter } from "next/router";

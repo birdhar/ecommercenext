@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSession, signIn, getSession, signOut } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import Sidebar from "./Sidebar";
 import Link from "next/link";
 import { useRouter } from "next/router";
